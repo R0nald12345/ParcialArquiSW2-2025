@@ -52,42 +52,28 @@
             app:tint="@android:color/white"
             android:padding="6dp" />
 
-        <!-- Nombre del producto (parte inferior izquierda) -->
+        <!-- Nombre de la categoría (parte inferior izquierda) -->
         <TextView
             android:id="@+id/tvNombre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="12dp"
-            android:layout_marginBottom="32dp"
+            android:layout_margin="12dp"
             android:text="Poleras"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- Precio del producto -->
-        <TextView
-            android:id="@+id/tvPrecio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="12dp"
-            android:layout_marginBottom="8dp"
-            android:text="Bs. 45.00"
-            android:textColor="@android:color/white"
-            android:textSize="14sp" />
-
-        <!-- Botón info (esquina inferior derecha) -->
+        <!-- Botón expandir (esquina inferior derecha) -->
         <ImageView
-            android:id="@+id/btnInfo"
+            android:id="@+id/btnExpandir"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_margin="8dp"
-            android:src="@drawable/ic_info"
+            android:src="@drawable/ic_expand"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:tint="@android:color/white"
             android:padding="6dp" />

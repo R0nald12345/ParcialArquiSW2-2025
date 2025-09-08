@@ -42,9 +42,23 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+
+
+    // RecyclerView
+    implementation("androidx.recyclerview:recyclerview:1.2.1")
+
+    //implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    // CardView
+    implementation("androidx.cardview:cardview:1.0.0")
+
+    // Networking
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+
+    // JSON
+    implementation("org.json:json:20220320")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }

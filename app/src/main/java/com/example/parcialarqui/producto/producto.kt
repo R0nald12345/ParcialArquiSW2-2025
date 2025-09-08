@@ -1,4 +1,4 @@
-package com.example.parcialarqui
+package com.example.parcialarqui.producto
 
 data class Producto(
     val id: Int,

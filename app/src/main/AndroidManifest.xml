@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.parcialarqui">
 
+    <!-- Permisos de red -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
-        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+        android:theme="@style/Theme.ParcialArqui"
+        android:usesCleartextTraffic="true">
 
+        <!-- Actividad principal (inicio de la app) -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -18,5 +22,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Nueva actividad: Categorías -->
+        <activity
+            android:name=".categoria.CategoriaActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+        <!-- Actividad: Productos -->
+        <activity
+            android:name=".producto.ProductosActivity"
+            android:exported="false"
+            android:parentActivityName=".categoria.CategoriaActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".categoria.CategoriaActivity" />
+        </activity>
+
     </application>
+
 </manifest>

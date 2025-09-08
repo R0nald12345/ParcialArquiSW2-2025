@@ -1,30 +1,27 @@
 package com.example.parcialarqui
 
 import android.util.Log
+import com.example.parcialarqui.categoria.Categoria
+import com.example.parcialarqui.producto.Producto
 import okhttp3.*
 import org.json.JSONArray
-import org.json.JSONObject
 import java.io.IOException
 
 class ApiGateway {
-
     private val client = OkHttpClient()
 
-    // URLs de los microservicios
-    private val CATEGORIA_SERVICE = "http://10.0.2.2:8081"
-    private val PRODUCTO_SERVICE = "http://10.0.2.2:8082"
+    // ✅ Único servicio ahora en puerto 8080
+    private val BASE_URL = "http://10.0.2.2:8080"
 
-    // Interfaz para callbacks
     interface ApiCallback<T> {
         fun onSuccess(data: T)
         fun onError(error: String)
     }
 
     // ===== SERVICIOS DE CATEGORIA =====
-
     fun obtenerCategorias(callback: ApiCallback<List<Categoria>>) {
         val request = Request.Builder()
-            .url("$CATEGORIA_SERVICE/categorias")
+            .url("$BASE_URL/categorias")
             .build()
 
         client.newCall(request).enqueue(object : Callback {
@@ -41,19 +38,19 @@ class ApiGateway {
 
                 response.body?.let { responseBody ->
                     try {
-                        val jsonString = responseBody.string()
-                        val jsonArray = JSONArray(jsonString)
+                        val jsonArray = JSONArray(responseBody.string())
                         val categorias = mutableListOf<Categoria>()
 
                         for (i in 0 until jsonArray.length()) {
                             val obj = jsonArray.getJSONObject(i)
-                            val categoria = Categoria(
-                                id = obj.getInt("id"),
-                                nombre = obj.getString("nombre"),
-                                descripcion = obj.getString("descripcion"),
-                                imagen = obj.getString("imagen")
+                            categorias.add(
+                                Categoria(
+                                    id = obj.getInt("id"),
+                                    nombre = obj.getString("nombre"),
+                                    descripcion = obj.getString("descripcion"),
+                                    imagen = obj.getString("imagen")
+                                )
                             )
-                            categorias.add(categoria)
                         }
 
                         callback.onSuccess(categorias)
@@ -67,10 +64,9 @@ class ApiGateway {
     }
 
     // ===== SERVICIOS DE PRODUCTO =====
-
     fun obtenerProductos(callback: ApiCallback<List<Producto>>) {
         val request = Request.Builder()
-            .url("$PRODUCTO_SERVICE/productos")
+            .url("$BASE_URL/productos")
             .build()
 
         client.newCall(request).enqueue(object : Callback {
@@ -87,22 +83,22 @@ class ApiGateway {
 
                 response.body?.let { responseBody ->
                     try {
-                        val jsonString = responseBody.string()
-                        val jsonArray = JSONArray(jsonString)
+                        val jsonArray = JSONArray(responseBody.string())
                         val productos = mutableListOf<Producto>()
 
                         for (i in 0 until jsonArray.length()) {
                             val obj = jsonArray.getJSONObject(i)
-                            val producto = Producto(
-                                id = obj.getInt("id"),
-                                nombre = obj.getString("nombre"),
-                                precio = obj.getDouble("precio"),
-                                descripcion = obj.getString("descripcion"),
-                                stock = obj.getInt("stock"),
-                                imagen = obj.getString("imagen"),
-                                categoriaId = obj.getInt("categoriaId")
+                            productos.add(
+                                Producto(
+                                    id = obj.getInt("id"),
+                                    nombre = obj.getString("nombre"),
+                                    precio = obj.getDouble("precio"),
+                                    descripcion = obj.getString("descripcion"),
+                                    stock = obj.getInt("stock"),
+                                    imagen = obj.getString("imagen"),
+                                    categoriaId = obj.getInt("categoriaId")
+                                )
                             )
-                            productos.add(producto)
                         }
 
                         callback.onSuccess(productos)
@@ -116,11 +112,9 @@ class ApiGateway {
     }
 
     fun obtenerProductosPorCategoria(categoriaId: Int, callback: ApiCallback<List<Producto>>) {
-        // Primero obtenemos todos los productos y luego filtramos
         obtenerProductos(object : ApiCallback<List<Producto>> {
             override fun onSuccess(data: List<Producto>) {
-                val productosFiltrados = data.filter { it.categoriaId == categoriaId }
-                callback.onSuccess(productosFiltrados)
+                callback.onSuccess(data.filter { it.categoriaId == categoriaId })
             }
 
             override fun onError(error: String) {
