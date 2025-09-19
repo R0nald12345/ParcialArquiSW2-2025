@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_inicio"
+        android:title="Inicio"
+        android:icon="@android:drawable/ic_menu_view"/>
+
+    <item
+        android:id="@+id/nav_pedidos"
+        android:title="Pedidos"
+        android:icon="@android:drawable/ic_menu_agenda"/>
+
+    <item
+        android:id="@+id/nav_clientes"
+        android:title="Clientes"
+        android:icon="@android:drawable/ic_menu_call"/>
+
+    <item
+        android:id="@+id/nav_repartidores"
+        android:title="Repartidores"
+        android:icon="@android:drawable/ic_menu_compass"/>
+
+    <item
+        android:id="@+id/nav_metodo_pago"
+        android:title="Métodos de Pago"
+        android:icon="@android:drawable/ic_menu_manage"/>
+
+</menu>

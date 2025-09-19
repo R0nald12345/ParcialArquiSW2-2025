@@ -13,7 +13,7 @@
         android:theme="@style/Theme.ParcialArqui"
         android:usesCleartextTraffic="true">
 
-        <!-- Actividad principal (inicio de la app) -->
+        <!-- Actividad principal -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
 
-        <!-- Nueva actividad: Categorías -->
+        <!-- Categorías -->
         <activity
             android:name=".categoria.CategoriaActivity"
             android:exported="false"
@@ -33,7 +33,7 @@
                 android:value=".MainActivity" />
         </activity>
 
-        <!-- Actividad: Productos -->
+        <!-- Productos -->
         <activity
             android:name=".producto.ProductosActivity"
             android:exported="false"
@@ -42,6 +42,28 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".categoria.CategoriaActivity" />
         </activity>
+
+        <!-- Métodos de Pago -->
+        <activity
+            android:name=".metodopago.MetodoPagoActivity"
+            android:exported="false"
+            android:parentActivityName=".categoria.CategoriaActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".categoria.CategoriaActivity" />
+        </activity>
+
+        <activity
+            android:name=".repartidor.RepartidorActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".cliente.ClienteActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".pedido.PedidoActivity"
+            android:exported="false" />
 
     </application>
 

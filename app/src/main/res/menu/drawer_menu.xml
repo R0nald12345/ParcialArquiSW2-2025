@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_inicio"
+        android:icon="@drawable/ic_home"
+        android:title="Inicio"/>
+    <item
+        android:id="@+id/nav_metodo_pago"
+        android:icon="@drawable/ic_menu"
+        android:title="Métodos de Pago"/>
+
+    <item
+        android:id="@+id/nav_repartidores"
+        android:title="Repartidores"
+        android:icon="@drawable/ic_car" />
+
+    <item
+        android:id="@+id/nav_clientes"
+        android:title="Clientes"
+        android:icon="@drawable/ic_person" />
+
+    <item
+        android:id="@+id/nav_pedidos"
+        android:title="Pedidos"
+        android:icon="@drawable/ic_shopping" />
+
+</menu>

@@ -6,6 +6,8 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.parcialarqui.categoria.CategoriaActivity
 
+//import com.example.parcialarqui.categoria.CategoriaActivity
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var btnCategorias: Button

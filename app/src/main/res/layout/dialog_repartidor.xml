@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/etNombre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre completo"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/etCi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Carnet de Identidad"
+        android:inputType="number"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/etPlaca"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Placa del vehículo"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/etCelular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Número de celular"
+        android:inputType="phone"
+        android:layout_marginBottom="8dp" />
+
+</LinearLayout>

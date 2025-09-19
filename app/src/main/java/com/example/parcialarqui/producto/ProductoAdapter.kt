@@ -4,14 +4,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.parcialarqui.ApiGateway
 import com.example.parcialarqui.R
 
 class ProductoAdapter(
     private val lista: List<Producto>,
-    private val onItemClick: (Producto) -> Unit
+    private val onItemClick: (Producto) -> Unit,
+    private val onRefresh: () -> Unit
 ) : RecyclerView.Adapter<ProductoAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -34,28 +37,72 @@ class ProductoAdapter(
 
         holder.tvNombre.text = producto.nombre
         holder.tvPrecio.text = "Bs. ${producto.precio}"
-
-        // Por ahora usamos drawable por defecto
         holder.ivImagen.setImageResource(R.drawable.ic_producto_default)
 
-        // Click en toda la tarjeta
-        holder.itemView.setOnClickListener {
-            onItemClick(producto)
-        }
+        // Click en tarjeta
+        holder.itemView.setOnClickListener { onItemClick(producto) }
+        holder.btnInfo.setOnClickListener { onItemClick(producto) }
 
-        // Botones de acción
+        // EDITAR
         holder.btnEditar.setOnClickListener {
-            // TODO: Implementar editar
-            Log.d("ProductoAdapter", "Editar producto: ${producto.nombre}")
+            val ctx = holder.itemView.context
+            val builder = android.app.AlertDialog.Builder(ctx)
+            builder.setTitle("Editar Producto")
+
+            val layout = LayoutInflater.from(ctx).inflate(R.layout.dialog_producto, null)
+            builder.setView(layout)
+
+            val etNombre = layout.findViewById<EditText>(R.id.etNombre)
+            val etPrecio = layout.findViewById<EditText>(R.id.etPrecio)
+            val etDescripcion = layout.findViewById<EditText>(R.id.etDescripcion)
+            val etStock = layout.findViewById<EditText>(R.id.etStock)
+
+            // Prellenar datos
+            etNombre.setText(producto.nombre)
+            etPrecio.setText(producto.precio.toString())
+            etDescripcion.setText(producto.descripcion)
+            etStock.setText(producto.stock.toString())
+
+            builder.setPositiveButton("Actualizar") { _, _ ->
+                val editado = producto.copy(
+                    nombre = etNombre.text.toString(),
+                    precio = etPrecio.text.toString().toDouble(),
+                    descripcion = etDescripcion.text.toString(),
+                    stock = etStock.text.toString().toInt()
+                )
+                val api = ApiGateway()
+                api.actualizarProducto(editado, object : ApiGateway.ApiCallback<Boolean> {
+                    override fun onSuccess(data: Boolean) {
+                        (ctx as? ProductosActivity)?.runOnUiThread { onRefresh() }
+                    }
+                    override fun onError(error: String) {
+                        Log.e("ProductoAdapter", "Error al actualizar: $error")
+                    }
+                })
+            }
+            builder.setNegativeButton("Cancelar", null)
+            builder.show()
         }
 
+        // ELIMINAR
         holder.btnEliminar.setOnClickListener {
-            // TODO: Implementar eliminar
-            Log.d("ProductoAdapter", "Eliminar producto: ${producto.nombre}")
-        }
-
-        holder.btnInfo.setOnClickListener {
-            onItemClick(producto)
+            val ctx = holder.itemView.context
+            android.app.AlertDialog.Builder(ctx)
+                .setTitle("Eliminar Producto")
+                .setMessage("¿Seguro que quieres eliminar ${producto.nombre}?")
+                .setPositiveButton("Sí") { _, _ ->
+                    val api = ApiGateway()
+                    api.eliminarProducto(producto.id, object : ApiGateway.ApiCallback<Boolean> {
+                        override fun onSuccess(data: Boolean) {
+                            (ctx as? ProductosActivity)?.runOnUiThread { onRefresh() }
+                        }
+                        override fun onError(error: String) {
+                            Log.e("ProductoAdapter", "Error al eliminar: $error")
+                        }
+                    })
+                }
+                .setNegativeButton("Cancelar", null)
+                .show()
         }
     }
 

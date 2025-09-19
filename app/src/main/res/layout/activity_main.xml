@@ -11,7 +11,7 @@
         android:id="@+id/tvTitulo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mi Aplicación Principal"
+        android:text="Tienda Móvil"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@android:color/white"
@@ -21,7 +21,7 @@
         android:id="@+id/btnCategorias"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Gestionar Categorías"
+        android:text="Iniciar"
         android:backgroundTint="#FFFFFF"
         android:textColor="#5733FF"
         android:layout_marginBottom="16dp" />
