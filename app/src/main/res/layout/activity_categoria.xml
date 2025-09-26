@@ -76,20 +76,20 @@
                 app:tint="@color/white"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="8dp" />
+
+            <ImageView
+                android:id="@+id/btnGenerarCatalogo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_pdf"
+                app:tint="@color/white"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:layout_marginLeft="8dp" />
+
         </LinearLayout>
 
-        <!-- Bottom Navigation -->
-        <!--
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNav"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_gravity="bottom"
-            android:background="@color/blue_primary"
-            app:itemIconTint="@color/nav_item_color"
-            app:itemTextColor="@color/nav_item_color"
-            app:menu="@menu/bottom_nav_menu" />
-        -->
+
 
     </LinearLayout>
 

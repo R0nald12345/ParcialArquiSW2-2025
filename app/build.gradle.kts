@@ -59,8 +59,11 @@ dependencies {
     implementation("org.json:json:20220320")
 
 
-    implementation ("com.itextpdf:itext7-core:7.2.5")
-    implementation ("com.itextpdf:itext7-layout:7.2.5")
+    //implementation ("com.itextpdf:itext7-core:7.2.5")
+    //implementation ("com.itextpdf:itext7-layout:7.2.5")
+
+    implementation ("com.itextpdf:itext7-core:7.1.16")
+    implementation ("com.itextpdf:layout:7.1.16")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
