@@ -66,7 +66,7 @@ class CategoriaAdapter(
                 api.actualizarCategoria(editada, object : ApiGateway.ApiCallback<Boolean> {
                     override fun onSuccess(data: Boolean) {
                         (ctx as? CategoriaActivity)?.runOnUiThread {
-                            onRefresh() // 👈 refresca lista
+                            onRefresh() // refresca lista
                         }
                     }
 

@@ -769,50 +769,6 @@ class ApiGateway {
 
     }
 
-    /*
-    fun obtenerRepartidores(callback: ApiCallback<List<Repartidor>>) {
-        val request = Request.Builder()
-            .url("$BASE_URL_REPARTIDOR/repartidores")
-            .get()
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                callback.onError("Error de conexión: ${e.message}")
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                try {
-                    val responseBody = response.body?.string()
-                    if (response.isSuccessful && responseBody != null) {
-                        val jsonArray = JSONArray(responseBody)
-                        val lista = mutableListOf<Repartidor>()
-
-                        for (i in 0 until jsonArray.length()) {
-                            val obj = jsonArray.getJSONObject(i)
-                            lista.add(
-                                Repartidor(
-                                    id = obj.getInt("id"),
-                                    nombre = obj.getString("nombre"),
-                                    ci = obj.getString("ci"),
-                                    placa = obj.getString("placa"),
-                                    celular = obj.getString("celular")
-                                )
-                            )
-                        }
-                        callback.onSuccess(lista)
-                    } else {
-                        callback.onError("Error del servidor: ${response.code}")
-                    }
-                } catch (e: Exception) {
-                    callback.onError("Error al procesar datos: ${e.message}")
-                }
-            }
-        })
-    }
-
-*/
-
     //==============================================================================================
     //  P E D I D O
     //==============================================================================================

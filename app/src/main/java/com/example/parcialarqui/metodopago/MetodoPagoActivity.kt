@@ -30,7 +30,7 @@ class MetodoPagoActivity : AppCompatActivity() {
     private lateinit var recyclerViewMetodoPago: RecyclerView
     private lateinit var fabAgregarMetodoPago: FloatingActionButton
     private lateinit var navigationView: NavigationView
-    private lateinit var toggle: ActionBarDrawerToggle // 👈 Agregar esta variable
+    private lateinit var toggle: ActionBarDrawerToggle //  Agregar esta variable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
