@@ -4,80 +4,88 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
+    app:cardCornerRadius="8dp"
     app:cardElevation="4dp">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:background="#4A4A4A">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
 
-        <!-- Imagen principal -->
+        <!-- Ícono de la categoría -->
         <ImageView
             android:id="@+id/ivImagen"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/polera_mockup" />
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/ic_category"
+            app:tint="#5733FF" />
+        <!-- lo puedes quitar si quieres el color original -->
 
-        <!-- Overlay oscuro -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#80000000" />
-
-        <!-- Botón editar (esquina superior izquierda) -->
-        <ImageView
-            android:id="@+id/btnEditar"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_margin="8dp"
-            android:src="@drawable/ic_edit"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:tint="@android:color/white"
-            android:padding="6dp" />
-
-        <!-- Botón eliminar (esquina superior derecha) -->
-        <ImageView
-            android:id="@+id/btnEliminar"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:layout_margin="8dp"
-            android:src="@drawable/ic_delete"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:tint="@android:color/white"
-            android:padding="6dp" />
-
-        <!-- Nombre de la categoría (parte inferior izquierda) -->
-        <TextView
-            android:id="@+id/tvNombre"
-            android:layout_width="wrap_content"
+        <!-- Info categoría -->
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="12dp"
-            android:text="Poleras"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <!-- Botón expandir (esquina inferior derecha) -->
-        <ImageView
-            android:id="@+id/btnExpandir"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="8dp"
-            android:src="@drawable/ic_expand"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:tint="@android:color/white"
-            android:padding="6dp" />
+            <!-- Nombre -->
+            <TextView
+                android:id="@+id/tvNombre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre de categoría"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#000000" />
 
-    </RelativeLayout>
+            <!-- Descripción -->
+            <TextView
+                android:id="@+id/tvDescripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Descripción breve de la categoría (2-3 líneas como máximo)"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:layout_marginTop="4dp" />
 
+            <!-- Acciones (Editar, Eliminar, Ver productos) -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <ImageView
+                    android:id="@+id/btnEditar"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_edit"
+                    app:tint="#4CAF50"
+                    android:layout_marginEnd="12dp" />
+
+                <ImageView
+                    android:id="@+id/btnEliminar"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_delete"
+                    app:tint="#F44336"
+                    android:layout_marginEnd="12dp" />
+
+                <Button
+                    android:id="@+id/btnVerProductos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ver productos"
+                    android:textColor="#5733FF"
+                    android:background="@android:color/transparent"
+                    android:textStyle="bold"
+                    android:padding="4dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
 </androidx.cardview.widget.CardView>

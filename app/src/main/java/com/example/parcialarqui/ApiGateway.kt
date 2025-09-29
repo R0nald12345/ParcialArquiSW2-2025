@@ -32,11 +32,6 @@ class ApiGateway {
     // AGREGAR ESTA LÍNEA CON LAS OTRAS URLs BASE:
     private val BASE_URL_REPARTIDOR = "http://10.0.2.2:8085"
 
-
-
-
-
-
     interface ApiCallback<T> {
         fun onSuccess(data: T)
         fun onError(error: String)
@@ -534,8 +529,6 @@ class ApiGateway {
                                     coordenadaX = obj.getDouble("coordenadaX"),
                                     coordenadaY = obj.getDouble("coordenadaY"),
                                     fechaRegistro = obj.getString("fechaRegistro"),
-                                    metodoPagoId = obj.getInt("metodoPagoId"),
-                                    metodoPagoNombre = obj.getString("metodoPagoNombre")
                                 )
                             )
                         }
@@ -558,25 +551,17 @@ class ApiGateway {
             "email": "${cliente.email}",
             "direccion": "${cliente.direccion}",
             "coordenadaX": ${cliente.coordenadaX},
-            "coordenadaY": ${cliente.coordenadaY},
-            "metodoPagoId": ${cliente.metodoPagoId}
+            "coordenadaY": ${cliente.coordenadaY}
         }
     """.trimIndent()
-
         val body = json.toRequestBody("application/json; charset=utf-8".toMediaType())
         val request = Request.Builder()
             .url("$BASE_URL_CLIENTE/clientes")
             .post(body)
             .build()
-
         client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                callback.onError("Error de conexión: ${e.message}")
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                callback.onSuccess(response.isSuccessful)
-            }
+            override fun onFailure(call: Call, e: IOException) { callback.onError("Error de conexión: ${e.message}") }
+            override fun onResponse(call: Call, response: Response) { callback.onSuccess(response.isSuccessful) }
         })
     }
 
@@ -589,25 +574,17 @@ class ApiGateway {
             "email": "${cliente.email}",
             "direccion": "${cliente.direccion}",
             "coordenadaX": ${cliente.coordenadaX},
-            "coordenadaY": ${cliente.coordenadaY},
-            "metodoPagoId": ${cliente.metodoPagoId}
+            "coordenadaY": ${cliente.coordenadaY}
         }
     """.trimIndent()
-
         val body = json.toRequestBody("application/json; charset=utf-8".toMediaType())
         val request = Request.Builder()
             .url("$BASE_URL_CLIENTE/clientes/${cliente.id}")
             .put(body)
             .build()
-
         client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                callback.onError("Error de conexión: ${e.message}")
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                callback.onSuccess(response.isSuccessful)
-            }
+            override fun onFailure(call: Call, e: IOException) { callback.onError("Error de conexión: ${e.message}") }
+            override fun onResponse(call: Call, response: Response) { callback.onSuccess(response.isSuccessful) }
         })
     }
 
@@ -718,8 +695,6 @@ class ApiGateway {
                             coordenadaX = obj.getDouble("coordenadaX"),
                             coordenadaY = obj.getDouble("coordenadaY"),
                             fechaRegistro = obj.getString("fechaRegistro"),
-                            metodoPagoId = obj.getInt("metodoPagoId"),
-                            metodoPagoNombre = obj.getString("metodoPagoNombre")
                         )
                         callback(cliente)
                     } else {

@@ -19,7 +19,9 @@ class MetodoPagoAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvNombre: TextView = view.findViewById(R.id.tvNombreMetodoPago)
         val btnEliminar: ImageView = view.findViewById(R.id.btnEliminarMetodoPago)
+        val btnEditar: ImageView = view.findViewById(R.id.btnEditarMetodoPago)
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -53,14 +55,15 @@ class MetodoPagoAdapter(
                 .show()
         }
 
-        // Editar (clic en todo el item)
-        holder.itemView.setOnClickListener {
+        // Editar
+        holder.btnEditar.setOnClickListener {
             val ctx = holder.itemView.context
             if (ctx is MetodoPagoActivity) {
                 ctx.mostrarDialogActualizarMetodoPago(metodoPago)
             }
         }
     }
+
 
     override fun getItemCount(): Int = lista.size
 }

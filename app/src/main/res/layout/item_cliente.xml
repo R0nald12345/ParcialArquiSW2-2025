@@ -54,12 +54,28 @@
                 android:textColor="#666666" />
 
             <TextView
-                android:id="@+id/tvMetodoPago"
+                android:id="@+id/tvDireccion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Método: Efectivo"
+                android:text="Dirección: Av. Banzer 1234"
                 android:textSize="14sp"
-                android:textColor="#4CAF50"
+                android:textColor="#666666" />
+
+            <TextView
+                android:id="@+id/tvCoordenadas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Coord: -17.7833, -63.1821"
+                android:textSize="13sp"
+                android:textColor="#999999" />
+
+            <TextView
+                android:id="@+id/tvFecha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Registro: 2024-01-16 14:20"
+                android:textSize="13sp"
+                android:textColor="#999999"
                 android:textStyle="italic" />
 
         </LinearLayout>

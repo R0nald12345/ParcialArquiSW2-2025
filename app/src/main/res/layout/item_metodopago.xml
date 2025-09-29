@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -22,14 +23,30 @@
             android:textSize="18sp"
             android:textStyle="bold"/>
 
+        <!-- Botón editar -->
+        <ImageView
+            android:id="@+id/btnEditarMetodoPago"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="56dp"
+            android:src="@drawable/ic_edit"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            app:tint="@android:color/white"/>
+
+        <!-- Botón eliminar -->
         <ImageView
             android:id="@+id/btnEliminarMetodoPago"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:layout_margin="12dp"
+            android:layout_marginEnd="12dp"
             android:src="@drawable/ic_delete"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
             app:tint="@android:color/white"/>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

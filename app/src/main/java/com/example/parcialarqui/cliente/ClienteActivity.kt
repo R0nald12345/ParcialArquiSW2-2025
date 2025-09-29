@@ -2,10 +2,8 @@ package com.example.parcialarqui.cliente
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -17,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.parcialarqui.ApiGateway
 import com.example.parcialarqui.MainActivity
 import com.example.parcialarqui.R
-import com.example.parcialarqui.metodopago.MetodoPago
 import com.example.parcialarqui.metodopago.MetodoPagoActivity
 import com.example.parcialarqui.repartidor.RepartidorActivity
 import com.google.android.material.navigation.NavigationView
@@ -36,20 +33,15 @@ class ClienteActivity : AppCompatActivity() {
 
     private val apiGateway = ApiGateway()
     private val clientes = mutableListOf<Cliente>()
-    private val metodosPago = mutableListOf<MetodoPago>()
     private lateinit var adapter: ClienteAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cliente)
 
-        // Configurar drawer y toolbar
         configurarDrawerYToolbar()
-
-        // Inicializar vistas y configurar
         inicializarVistas()
         configurarRecyclerView()
-        cargarMetodosPago()
         cargarClientes()
     }
 
@@ -73,29 +65,24 @@ class ClienteActivity : AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        // Navegación del drawer
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_inicio -> {
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, MainActivity::class.java))
                     drawerLayout.closeDrawers()
                     true
                 }
                 R.id.nav_metodo_pago -> {
-                    val intent = Intent(this, MetodoPagoActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, MetodoPagoActivity::class.java))
                     drawerLayout.closeDrawers()
                     true
                 }
                 R.id.nav_repartidores -> {
-                    val intent = Intent(this, RepartidorActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, RepartidorActivity::class.java))
                     drawerLayout.closeDrawers()
                     true
                 }
                 R.id.nav_clientes -> {
-                    // Ya estás en Clientes
                     drawerLayout.closeDrawers()
                     true
                 }
@@ -129,31 +116,8 @@ class ClienteActivity : AppCompatActivity() {
 
     private fun configurarRecyclerView() {
         recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = ClienteAdapter(clientes) {
-            cargarClientes() // Recargar cuando se edite o elimine
-        }
+        adapter = ClienteAdapter(clientes) { cargarClientes() }
         recyclerView.adapter = adapter
-    }
-
-    private fun cargarMetodosPago() {
-        apiGateway.obtenerMetodosPago(object : ApiGateway.ApiCallback<List<MetodoPago>> {
-            override fun onSuccess(data: List<MetodoPago>) {
-                runOnUiThread {
-                    metodosPago.clear()
-                    metodosPago.addAll(data)
-                }
-            }
-
-            override fun onError(error: String) {
-                runOnUiThread {
-                    Toast.makeText(
-                        this@ClienteActivity,
-                        "Error al cargar métodos de pago: $error",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        })
     }
 
     private fun cargarClientes() {
@@ -168,14 +132,24 @@ class ClienteActivity : AppCompatActivity() {
 
             override fun onError(error: String) {
                 runOnUiThread {
-                    Toast.makeText(
-                        this@ClienteActivity,
-                        "Error: $error",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(this@ClienteActivity, "Error: $error", Toast.LENGTH_LONG).show()
                 }
             }
         })
+    }
+
+    // 👉 función para extraer coordenadas desde un link de Maps
+    private fun parseCoordenadas(texto: String): Pair<Double?, Double?> {
+        val regex = Regex("(-?\\d+\\.\\d+),\\s*(-?\\d+\\.\\d+)")
+        val match = regex.find(texto)
+
+        return if (match != null && match.groupValues.size == 3) {
+            val lat = match.groupValues[1].toDoubleOrNull()
+            val lng = match.groupValues[2].toDoubleOrNull()
+            Pair(lat, lng)
+        } else {
+            Pair(null, null)
+        }
     }
 
     private fun mostrarDialogCrearCliente() {
@@ -189,21 +163,10 @@ class ClienteActivity : AppCompatActivity() {
         val etTelefono = layout.findViewById<EditText>(R.id.etTelefono)
         val etEmail = layout.findViewById<EditText>(R.id.etEmail)
         val etDireccion = layout.findViewById<EditText>(R.id.etDireccion)
-        val etCoordenadaX = layout.findViewById<EditText>(R.id.etCoordenadaX)
-        val etCoordenadaY = layout.findViewById<EditText>(R.id.etCoordenadaY)
-        val spinnerMetodoPago = layout.findViewById<Spinner>(R.id.spinnerMetodoPago)
-
-        // Configurar spinner con métodos de pago
-        val spinnerAdapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            metodosPago.map { it.nombre }
-        )
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerMetodoPago.adapter = spinnerAdapter
+        val etUbicacion = layout.findViewById<EditText>(R.id.etUbicacion)
 
         builder.setPositiveButton("Guardar") { _, _ ->
-            val selectedMetodoPago = metodosPago[spinnerMetodoPago.selectedItemPosition]
+            val (lat, lng) = parseCoordenadas(etUbicacion.text.toString())
 
             val nuevo = Cliente(
                 id = 0,
@@ -211,11 +174,9 @@ class ClienteActivity : AppCompatActivity() {
                 telefono = etTelefono.text.toString(),
                 email = etEmail.text.toString(),
                 direccion = etDireccion.text.toString(),
-                coordenadaX = etCoordenadaX.text.toString().toDoubleOrNull() ?: 0.0,
-                coordenadaY = etCoordenadaY.text.toString().toDoubleOrNull() ?: 0.0,
-                fechaRegistro = "", // El servidor lo asignará
-                metodoPagoId = selectedMetodoPago.id,
-                metodoPagoNombre = selectedMetodoPago.nombre
+                coordenadaX = lat ?: 0.0,
+                coordenadaY = lng ?: 0.0,
+                fechaRegistro = "" // lo asigna el servidor
             )
 
             apiGateway.crearCliente(nuevo, object : ApiGateway.ApiCallback<Boolean> {
@@ -228,11 +189,7 @@ class ClienteActivity : AppCompatActivity() {
 
                 override fun onError(error: String) {
                     runOnUiThread {
-                        Toast.makeText(
-                            this@ClienteActivity,
-                            "Error: $error",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this@ClienteActivity, "Error: $error", Toast.LENGTH_SHORT).show()
                     }
                 }
             })
@@ -253,35 +210,20 @@ class ClienteActivity : AppCompatActivity() {
         val etTelefono = layout.findViewById<EditText>(R.id.etTelefono)
         val etEmail = layout.findViewById<EditText>(R.id.etEmail)
         val etDireccion = layout.findViewById<EditText>(R.id.etDireccion)
-        val etCoordenadaX = layout.findViewById<EditText>(R.id.etCoordenadaX)
-        val etCoordenadaY = layout.findViewById<EditText>(R.id.etCoordenadaY)
-        val spinnerMetodoPago = layout.findViewById<Spinner>(R.id.spinnerMetodoPago)
+        val etUbicacion = layout.findViewById<EditText>(R.id.etUbicacion)
 
-        // Llenar con datos actuales
         etNombre.setText(cliente.nombre)
         etTelefono.setText(cliente.telefono)
         etEmail.setText(cliente.email)
         etDireccion.setText(cliente.direccion)
-        etCoordenadaX.setText(cliente.coordenadaX.toString())
-        etCoordenadaY.setText(cliente.coordenadaY.toString())
 
-        // Configurar spinner con métodos de pago
-        val spinnerAdapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            metodosPago.map { it.nombre }
-        )
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerMetodoPago.adapter = spinnerAdapter
-
-        // Seleccionar método de pago actual
-        val currentMethodIndex = metodosPago.indexOfFirst { it.id == cliente.metodoPagoId }
-        if (currentMethodIndex >= 0) {
-            spinnerMetodoPago.setSelection(currentMethodIndex)
+        // si ya tiene coordenadas, las mostramos como "lat,lng"
+        if (cliente.coordenadaX != 0.0 && cliente.coordenadaY != 0.0) {
+            etUbicacion.setText("${cliente.coordenadaX},${cliente.coordenadaY}")
         }
 
         builder.setPositiveButton("Actualizar") { _, _ ->
-            val selectedMetodoPago = metodosPago[spinnerMetodoPago.selectedItemPosition]
+            val (lat, lng) = parseCoordenadas(etUbicacion.text.toString())
 
             val actualizado = Cliente(
                 id = cliente.id,
@@ -289,11 +231,9 @@ class ClienteActivity : AppCompatActivity() {
                 telefono = etTelefono.text.toString(),
                 email = etEmail.text.toString(),
                 direccion = etDireccion.text.toString(),
-                coordenadaX = etCoordenadaX.text.toString().toDoubleOrNull() ?: 0.0,
-                coordenadaY = etCoordenadaY.text.toString().toDoubleOrNull() ?: 0.0,
-                fechaRegistro = cliente.fechaRegistro, // Mantener fecha original
-                metodoPagoId = selectedMetodoPago.id,
-                metodoPagoNombre = selectedMetodoPago.nombre
+                coordenadaX = lat ?: 0.0,
+                coordenadaY = lng ?: 0.0,
+                fechaRegistro = cliente.fechaRegistro
             )
 
             apiGateway.actualizarCliente(actualizado, object : ApiGateway.ApiCallback<Boolean> {
@@ -306,11 +246,7 @@ class ClienteActivity : AppCompatActivity() {
 
                 override fun onError(error: String) {
                     runOnUiThread {
-                        Toast.makeText(
-                            this@ClienteActivity,
-                            "Error: $error",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this@ClienteActivity, "Error: $error", Toast.LENGTH_SHORT).show()
                     }
                 }
             })

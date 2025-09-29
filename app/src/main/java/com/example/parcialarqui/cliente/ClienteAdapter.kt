@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.parcialarqui.ApiGateway
 import com.example.parcialarqui.R
 
+import android.os.Handler
+import android.os.Looper
+
 class ClienteAdapter(
     private val lista: MutableList<Cliente>,
     private val onRefresh: () -> Unit
@@ -20,7 +23,9 @@ class ClienteAdapter(
         val tvNombre: TextView = itemView.findViewById(R.id.tvNombre)
         val tvTelefono: TextView = itemView.findViewById(R.id.tvTelefono)
         val tvEmail: TextView = itemView.findViewById(R.id.tvEmail)
-        val tvMetodoPago: TextView = itemView.findViewById(R.id.tvMetodoPago)
+        val tvDireccion: TextView = itemView.findViewById(R.id.tvDireccion)
+        val tvCoordenadas: TextView = itemView.findViewById(R.id.tvCoordenadas)
+        val tvFecha: TextView = itemView.findViewById(R.id.tvFecha)
         val btnEditar: ImageView = itemView.findViewById(R.id.btnEditar)
         val btnEliminar: ImageView = itemView.findViewById(R.id.btnEliminar)
     }
@@ -37,38 +42,33 @@ class ClienteAdapter(
         holder.tvNombre.text = cliente.nombre
         holder.tvTelefono.text = "Tel: ${cliente.telefono}"
         holder.tvEmail.text = cliente.email
-        holder.tvMetodoPago.text = "Método: ${cliente.metodoPagoNombre}"
+        holder.tvDireccion.text = "Dir: ${cliente.direccion}"
+        holder.tvCoordenadas.text = "Coord: ${cliente.coordenadaX}, ${cliente.coordenadaY}"
+        holder.tvFecha.text = "Registro: ${cliente.fechaRegistro}"
 
-        // Botón editar
         holder.btnEditar.setOnClickListener {
-            (holder.itemView.context as ClienteActivity)
-                .mostrarDialogActualizarCliente(cliente)
+            (holder.itemView.context as ClienteActivity).mostrarDialogActualizarCliente(cliente)
         }
 
-        // Botón eliminar
         holder.btnEliminar.setOnClickListener {
             val builder = AlertDialog.Builder(holder.itemView.context)
             builder.setTitle("Confirmar eliminación")
-            builder.setMessage("¿Estás seguro de que quieres eliminar a ${cliente.nombre}?")
+            builder.setMessage("¿Eliminar a ${cliente.nombre}?")
 
             builder.setPositiveButton("Eliminar") { _, _ ->
                 val apiGateway = ApiGateway()
                 apiGateway.eliminarCliente(cliente.id, object : ApiGateway.ApiCallback<Boolean> {
                     override fun onSuccess(data: Boolean) {
-                        onRefresh()
-                        Toast.makeText(
-                            holder.itemView.context,
-                            "Cliente eliminado",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Handler(Looper.getMainLooper()).post {
+                            onRefresh()
+                            Toast.makeText(holder.itemView.context, "Cliente eliminado", Toast.LENGTH_SHORT).show()
+                        }
                     }
 
                     override fun onError(error: String) {
-                        Toast.makeText(
-                            holder.itemView.context,
-                            "Error: $error",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Handler(Looper.getMainLooper()).post {
+                            Toast.makeText(holder.itemView.context, "Error: $error", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 })
             }

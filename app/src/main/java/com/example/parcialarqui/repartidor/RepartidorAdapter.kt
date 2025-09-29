@@ -20,6 +20,7 @@ class RepartidorAdapter(
         val tvNombre: TextView = itemView.findViewById(R.id.tvNombre)
         val tvCelular: TextView = itemView.findViewById(R.id.tvCelular)
         val tvPlaca: TextView = itemView.findViewById(R.id.tvPlaca)
+        val tvCi: TextView = itemView.findViewById(R.id.tvCi)
         val btnEditar: ImageView = itemView.findViewById(R.id.btnEditar)
         val btnEliminar: ImageView = itemView.findViewById(R.id.btnEliminar)
     }
@@ -36,6 +37,8 @@ class RepartidorAdapter(
         holder.tvNombre.text = repartidor.nombre
         holder.tvCelular.text = "Cel: ${repartidor.celular}"
         holder.tvPlaca.text = "Placa: ${repartidor.placa}"
+        holder.tvCi.text = "CI: ${repartidor.ci}"
+
 
         // Botón editar
         holder.btnEditar.setOnClickListener {

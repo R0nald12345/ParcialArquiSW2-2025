@@ -1,5 +1,6 @@
 package com.example.parcialarqui.categoria
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,19 +11,20 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.parcialarqui.ApiGateway
 import com.example.parcialarqui.R
+import com.example.parcialarqui.producto.ProductosActivity
 
 class CategoriaAdapter(
     private val lista: List<Categoria>,
-    private val onItemClick: (Categoria) -> Unit,
     private val onRefresh: () -> Unit // callback para recargar categorías
 ) : RecyclerView.Adapter<CategoriaAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvNombre: TextView = view.findViewById(R.id.tvNombre)
+        val tvDescripcion: TextView = view.findViewById(R.id.tvDescripcion)
         val ivImagen: ImageView = view.findViewById(R.id.ivImagen)
         val btnEditar: ImageView = view.findViewById(R.id.btnEditar)
         val btnEliminar: ImageView = view.findViewById(R.id.btnEliminar)
-        val btnExpandir: ImageView = view.findViewById(R.id.btnExpandir)
+        val btnVerProductos: TextView = view.findViewById(R.id.btnVerProductos) // 👈 corregido
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -35,13 +37,20 @@ class CategoriaAdapter(
         val categoria = lista[position]
 
         holder.tvNombre.text = categoria.nombre
-        holder.ivImagen.setImageResource(R.drawable.ic_categoria_default)
+        holder.tvDescripcion.text = categoria.descripcion
+        holder.ivImagen.setImageResource(R.drawable.ic_category)
 
-        // Click en la tarjeta o expandir
-        holder.itemView.setOnClickListener { onItemClick(categoria) }
-        holder.btnExpandir.setOnClickListener { onItemClick(categoria) }
+        //  Botón "Ver productos"
+        holder.btnVerProductos.setOnClickListener {
+            val ctx = holder.itemView.context
+            val intent = Intent(ctx, ProductosActivity::class.java).apply {
+                putExtra("categoria_id", categoria.id)
+                putExtra("categoria_nombre", categoria.nombre)
+            }
+            ctx.startActivity(intent)
+        }
 
-        // EDITAR
+        //  Editar
         holder.btnEditar.setOnClickListener {
             val ctx = holder.itemView.context
             val builder = android.app.AlertDialog.Builder(ctx)
@@ -66,7 +75,7 @@ class CategoriaAdapter(
                 api.actualizarCategoria(editada, object : ApiGateway.ApiCallback<Boolean> {
                     override fun onSuccess(data: Boolean) {
                         (ctx as? CategoriaActivity)?.runOnUiThread {
-                            onRefresh() // refresca lista
+                            onRefresh()
                         }
                     }
 
@@ -80,7 +89,7 @@ class CategoriaAdapter(
             builder.show()
         }
 
-        // ELIMINAR
+        //  Eliminar
         holder.btnEliminar.setOnClickListener {
             val ctx = holder.itemView.context
             android.app.AlertDialog.Builder(ctx)
@@ -91,7 +100,7 @@ class CategoriaAdapter(
                     api.eliminarCategoria(categoria.id, object : ApiGateway.ApiCallback<Boolean> {
                         override fun onSuccess(data: Boolean) {
                             (ctx as? CategoriaActivity)?.runOnUiThread {
-                                onRefresh() // 👈 refresca lista
+                                onRefresh()
                             }
                         }
 

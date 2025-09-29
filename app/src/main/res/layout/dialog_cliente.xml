@@ -40,26 +40,13 @@
             android:layout_marginBottom="8dp" />
 
         <EditText
-            android:id="@+id/etCoordenadaX"
+            android:id="@+id/etUbicacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Coordenada X (latitud)"
-            android:inputType="numberDecimal|numberSigned"
-            android:layout_marginBottom="8dp" />
+            android:hint="Ubicación (pegar link de Maps)"
+            android:inputType="textUri" />
 
-        <EditText
-            android:id="@+id/etCoordenadaY"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Coordenada Y (longitud)"
-            android:inputType="numberDecimal|numberSigned"
-            android:layout_marginBottom="8dp" />
 
-        <Spinner
-            android:id="@+id/spinnerMetodoPago"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp" />
 
     </LinearLayout>
 </ScrollView>

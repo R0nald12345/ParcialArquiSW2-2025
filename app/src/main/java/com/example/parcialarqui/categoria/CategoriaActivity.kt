@@ -1,4 +1,3 @@
-
 package com.example.parcialarqui.categoria
 
 import android.content.Intent
@@ -20,11 +19,8 @@ import com.example.parcialarqui.cliente.ClienteActivity
 import com.example.parcialarqui.metodopago.MetodoPagoActivity
 import com.example.parcialarqui.pedido.PedidoActivity
 import com.example.parcialarqui.producto.Producto
-import com.example.parcialarqui.producto.ProductosActivity
 import com.example.parcialarqui.repartidor.RepartidorActivity
 import com.google.android.material.navigation.NavigationView
-import com.example.parcialarqui.GeneradorCatalogo.CatalogoPdfGenerator
-import com.example.parcialarqui.GeneradorCatalogo.WhatsAppHelper
 
 class CategoriaActivity : AppCompatActivity() {
 
@@ -41,9 +37,6 @@ class CategoriaActivity : AppCompatActivity() {
     private val categorias = mutableListOf<Categoria>()
     private lateinit var adapter: CategoriaAdapter
 
-    // Variables para PDF
-    private lateinit var btnGenerarCatalogo: ImageView
-    private val todosLosProductos = mutableListOf<Producto>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,20 +61,17 @@ class CategoriaActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_metodo_pago -> {
-                    val intent = Intent(this, MetodoPagoActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, MetodoPagoActivity::class.java))
                     drawerLayout.closeDrawers()
                     true
                 }
                 R.id.nav_repartidores -> {
-                    val intent = Intent(this, RepartidorActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, RepartidorActivity::class.java))
                     drawerLayout.closeDrawers()
                     true
                 }
                 R.id.nav_clientes -> {
-                    val intent = Intent(this, ClienteActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, ClienteActivity::class.java))
                     drawerLayout.closeDrawers()
                     true
                 }
@@ -99,23 +89,6 @@ class CategoriaActivity : AppCompatActivity() {
         cargarCategorias()
     }
 
-    private fun configurarBottomNav() {
-        val bottomNav = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNav)
-        bottomNav.selectedItemId = R.id.nav_home
-
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_home -> true
-                R.id.nav_car -> {
-                    val intent = Intent(this, ProductosActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                else -> false
-            }
-        }
-    }
-
     private fun inicializarVistas() {
         recyclerView = findViewById(R.id.recyclerView)
         etBuscar = findViewById(R.id.etBuscar)
@@ -128,11 +101,6 @@ class CategoriaActivity : AppCompatActivity() {
             mostrarDialogCrearCategoria()
         }
 
-        btnGenerarCatalogo = findViewById(R.id.btnGenerarCatalogo)
-
-        btnGenerarCatalogo.setOnClickListener {
-            cargarTodosLosProductosYGenerarPdf()
-        }
     }
 
     private fun configurarRecyclerView() {
@@ -140,15 +108,7 @@ class CategoriaActivity : AppCompatActivity() {
 
         adapter = CategoriaAdapter(
             lista = categorias,
-            onItemClick = { categoria ->
-                val intent = Intent(this, ProductosActivity::class.java)
-                intent.putExtra("categoria_id", categoria.id)
-                intent.putExtra("categoria_nombre", categoria.nombre)
-                startActivity(intent)
-            },
-            onRefresh = {
-                cargarCategorias()
-            }
+            onRefresh = { cargarCategorias() } // 👈 ahora solo recibe onRefresh
         )
 
         recyclerView.adapter = adapter
@@ -191,7 +151,7 @@ class CategoriaActivity : AppCompatActivity() {
             val nueva = Categoria(
                 id = 0,
                 nombre = etNombre.text.toString(),
-                descripcion = etDescripcion.text.toString(),
+                descripcion = etDescripcion.text.toString()
             )
             apiGateway.crearCategoria(nueva, object : ApiGateway.ApiCallback<Boolean> {
                 override fun onSuccess(data: Boolean) {
@@ -200,7 +160,11 @@ class CategoriaActivity : AppCompatActivity() {
 
                 override fun onError(error: String) {
                     runOnUiThread {
-                        Toast.makeText(this@CategoriaActivity, "Error: $error", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@CategoriaActivity,
+                            "Error: $error",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             })
@@ -210,66 +174,5 @@ class CategoriaActivity : AppCompatActivity() {
         builder.show()
     }
 
-    // =====================
-    // PDF y Compartir
-    // =====================
 
-    private fun cargarTodosLosProductosYGenerarPdf() {
-        Toast.makeText(this, "Generando catálogo...", Toast.LENGTH_SHORT).show()
-
-        apiGateway.obtenerProductos(object : ApiGateway.ApiCallback<List<Producto>> {
-            override fun onSuccess(productos: List<Producto>) {
-                generarYCompartirPdf(productos)
-            }
-
-            override fun onError(error: String) {
-                runOnUiThread {
-                    Toast.makeText(this@CategoriaActivity, "Error al cargar productos: $error", Toast.LENGTH_SHORT).show()
-                }
-            }
-        })
-    }
-
-    private fun generarYCompartirPdf(productos: List<Producto>) {
-        val pdfGenerator = CatalogoPdfGenerator()
-
-        pdfGenerator.generarCatalogoPdf(this, categorias, productos) { rutaPdf ->
-            runOnUiThread {
-                if (rutaPdf != null) {
-                    Toast.makeText(this, "PDF generado exitosamente", Toast.LENGTH_SHORT).show()
-                    mostrarDialogoCompartir(rutaPdf)
-                } else {
-                    Toast.makeText(this, "Error al generar PDF", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
-    private fun mostrarDialogoCompartir(rutaPdf: String) {
-        val builder = android.app.AlertDialog.Builder(this)
-        builder.setTitle("Catálogo Generado")
-        builder.setMessage("PDF creado exitosamente")
-
-        builder.setPositiveButton("Enviar a WhatsApp") { _, _ ->
-            WhatsAppHelper.compartirPdfPorWhatsApp(this, rutaPdf, "59169153667")
-        }
-
-        builder.setNeutralButton("Compartir con otras apps") { _, _ ->
-            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                type = "application/pdf"
-                val uri = androidx.core.content.FileProvider.getUriForFile(
-                    this@CategoriaActivity,
-                    "com.example.parcialarqui.fileprovider",
-                    java.io.File(rutaPdf)
-                )
-                putExtra(Intent.EXTRA_STREAM, uri)
-                putExtra(Intent.EXTRA_TEXT, "Catálogo de productos")
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
-            startActivity(Intent.createChooser(shareIntent, "Compartir catálogo"))
-        }
-
-        builder.setNegativeButton("Cancelar", null)
-        builder.show()
-    }
 }
