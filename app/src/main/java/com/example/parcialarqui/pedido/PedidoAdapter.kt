@@ -13,7 +13,8 @@ import java.util.*
 class PedidoAdapter(
     private val lista: MutableList<PedidoCompleto>,
     private val onEditarClick: (PedidoCompleto) -> Unit,
-    private val onEliminarClick: (PedidoCompleto) -> Unit
+    private val onEliminarClick: (PedidoCompleto) -> Unit,
+    private val onCompartirClick: (PedidoCompleto) -> Unit
 ) : RecyclerView.Adapter<PedidoAdapter.PedidoViewHolder>() {
 
     class PedidoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -22,8 +23,11 @@ class PedidoAdapter(
         val tvCliente: TextView = itemView.findViewById(R.id.tvCliente)
         val tvRepartidor: TextView = itemView.findViewById(R.id.tvRepartidor)
         val tvMonto: TextView = itemView.findViewById(R.id.tvMonto)
+        val tvMetodoPago: TextView = itemView.findViewById(R.id.tvMetodoPago)
         val btnEditar: ImageButton = itemView.findViewById(R.id.btnEditar)
         val btnEliminar: ImageButton = itemView.findViewById(R.id.btnEliminar)
+
+        val btnCompartir: ImageButton = itemView.findViewById(R.id.btnCompartir)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PedidoViewHolder {
@@ -40,14 +44,12 @@ class PedidoAdapter(
         holder.tvCliente.text = "${pedido.clienteNombre} - ${pedido.clienteTelefono}"
         holder.tvRepartidor.text = "${pedido.repartidorNombre} - ${pedido.repartidorPlaca}"
         holder.tvMonto.text = "Total: Bs. ${String.format("%.2f", pedido.monto)}"
+        holder.tvMetodoPago.text = "Pago: ${pedido.metodoPagoNombre}"
 
-        holder.btnEditar.setOnClickListener {
-            onEditarClick(pedido)
-        }
+        holder.btnEditar.setOnClickListener { onEditarClick(pedido) }
+        holder.btnEliminar.setOnClickListener { onEliminarClick(pedido) }
 
-        holder.btnEliminar.setOnClickListener {
-            onEliminarClick(pedido)
-        }
+        holder.btnCompartir.setOnClickListener { onCompartirClick(pedido) }
     }
 
     private fun formatearFecha(fecha: String): String {

@@ -8,7 +8,10 @@ data class PedidoCompleto(
     val repartidorId: Int,
     val clienteNombre: String,
     val clienteTelefono: String,
+    val metodoPagoId: Int,
     val repartidorNombre: String,
     val repartidorPlaca: String,
-    val detalles: List<DetallePedido> = emptyList()
+    val detalles: List<DetallePedido> = emptyList(),
+    val metodoPagoNombre: String = ""
+
 )

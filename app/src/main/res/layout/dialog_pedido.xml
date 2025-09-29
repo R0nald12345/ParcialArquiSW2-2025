@@ -7,209 +7,196 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
-
-        <!-- Información del pedido -->
+        android:padding="16dp"> <!-- Información del pedido -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
             android:text="Información del Pedido"
-            android:textStyle="bold"
-            android:textSize="18sp"
             android:textColor="#2196F3"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Cliente Dropdown -->
+            android:textSize="18sp"
+            android:textStyle="bold" /> <!-- Cliente Dropdown -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Cliente *">
 
-            <AutoCompleteTextView
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/actvCliente"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
                 android:background="@drawable/edittext_background"
+                android:inputType="none"
                 android:padding="12dp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Repartidor Dropdown -->
+        </com.google.android.material.textfield.TextInputLayout> <!-- Repartidor Dropdown -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Repartidor *">
 
-            <AutoCompleteTextView
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/actvRepartidor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
                 android:background="@drawable/edittext_background"
+                android:inputType="none"
                 android:padding="12dp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Fecha -->
-        <TextView
+        </com.google.android.material.textfield.TextInputLayout> <!-- Método de Pago -->
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Método de Pago *">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/actvMetodoPago"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_background"
+                android:inputType="none"
+                android:padding="12dp" />
+        </com.google.android.material.textfield.TextInputLayout> <!-- Fecha --> <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="Fecha *"
-            android:textStyle="bold"
             android:textSize="14sp"
-            android:layout_marginTop="8dp" />
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/etFecha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Fecha del pedido"
-            android:focusable="false"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/edittext_background"
-            android:padding="12dp" />
-
-        <!-- Monto Total -->
-        <TextView
+            android:focusable="false"
+            android:hint="Fecha del pedido"
+            android:padding="12dp" /> <!-- Monto Total --> <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="Monto Total *"
-            android:textStyle="bold"
             android:textSize="14sp"
-            android:layout_marginTop="8dp" />
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/etMonto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="0.00"
-            android:inputType="numberDecimal"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/edittext_background"
-            android:padding="12dp"
-            android:focusable="false" />
-
-        <!-- Línea separadora -->
+            android:focusable="false"
+            android:hint="0.00"
+            android:inputType="numberDecimal"
+            android:padding="12dp" /> <!-- Línea separadora -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#E0E0E0"
-            android:layout_marginVertical="8dp" />
-
-        <!-- Sección de productos -->
+            android:layout_marginVertical="8dp"
+            android:background="#E0E0E0" /> <!-- Sección de productos -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
             android:text="Agregar Productos"
-            android:textStyle="bold"
-            android:textSize="18sp"
             android:textColor="#4CAF50"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Producto Dropdown -->
+            android:textSize="18sp"
+            android:textStyle="bold" /> <!-- Producto Dropdown -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Producto *">
 
-            <AutoCompleteTextView
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/actvProducto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
                 android:background="@drawable/edittext_background"
+                android:inputType="none"
                 android:padding="12dp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Cantidad y Precio -->
+        </com.google.android.material.textfield.TextInputLayout> <!-- Cantidad y Precio -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginEnd="8dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Cantidad *"
-                    android:textStyle="bold"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/etCantidad"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="1"
-                    android:inputType="number"
                     android:layout_marginTop="4dp"
                     android:background="@drawable/edittext_background"
+                    android:hint="1"
+                    android:inputType="number"
                     android:padding="12dp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="8dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Precio Unitario"
-                    android:textStyle="bold"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/etPrecio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="0.00"
-                    android:inputType="numberDecimal"
                     android:layout_marginTop="4dp"
                     android:background="@drawable/edittext_background"
-                    android:padding="12dp"
-                    android:focusable="false" />
+                    android:focusable="false"
+                    android:hint="0.00"
+                    android:inputType="numberDecimal"
+                    android:padding="12dp" />
             </LinearLayout>
-        </LinearLayout>
-
-        <!-- Botón Agregar -->
+        </LinearLayout> <!-- Botón Agregar -->
         <Button
             android:id="@+id/btnAgregarDetalle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="+ Agregar Producto al Pedido"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/button_primary"
+            android:padding="12dp"
+            android:text="+ Agregar Producto al Pedido"
             android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:padding="12dp" />
-
-        <!-- Línea separadora -->
+            android:textStyle="bold" /> <!-- Línea separadora -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#E0E0E0"
-            android:layout_marginVertical="8dp" />
-
-        <!-- Lista de productos agregados -->
-        <TextView
+            android:layout_marginVertical="8dp"
+            android:background="#E0E0E0" /> <!-- Lista de productos agregados --> <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
             android:text="Productos en el Pedido"
-            android:textStyle="bold"
-            android:textSize="18sp"
             android:textColor="#FF9800"
-            android:layout_marginBottom="12dp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvDetalles"

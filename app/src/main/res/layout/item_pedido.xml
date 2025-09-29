@@ -1,99 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    android:padding="12dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp">
+        android:orientation="vertical">
 
-        <!-- Información del pedido -->
-        <LinearLayout
-            android:layout_width="0dp"
+        <!-- Datos del pedido -->
+        <TextView
+            android:id="@+id/tvId"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:text="Pedido #001"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@android:color/black" />
 
-            <TextView
-                android:id="@+id/tvId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pedido #001"
-                android:textColor="@android:color/black"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tvFecha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="15/01/2024 10:30" />
 
-            <TextView
-                android:id="@+id/tvFecha"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="01/01/2024 12:00"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp" />
+        <TextView
+            android:id="@+id/tvCliente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cliente - Teléfono" />
 
-            <TextView
-                android:id="@+id/tvCliente"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cliente - Teléfono"
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
-                android:layout_marginTop="4dp" />
+        <TextView
+            android:id="@+id/tvRepartidor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Repartidor - Placa" />
 
-            <TextView
-                android:id="@+id/tvRepartidor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Repartidor - Placa"
-                android:textColor="@android:color/black"
-                android:textSize="14sp" />
+        <TextView
+            android:id="@+id/tvMetodoPago"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pago: Efectivo" />
 
-            <TextView
-                android:id="@+id/tvMonto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total: Bs. 0.00"
-                android:textColor="#4CAF50"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginTop="4dp" />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tvMonto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total: Bs. 0.00"
+            android:textStyle="bold"
+            android:textColor="@android:color/holo_green_dark" />
 
         <!-- Botones de acción -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center_vertical">
+            android:gravity="end"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
 
+            <!-- Editar -->
             <ImageButton
                 android:id="@+id/btnEditar"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_edit"
                 android:contentDescription="Editar"
-                android:layout_marginBottom="8dp"
-                android:backgroundTint="#2196F3" />
+                app:srcCompat="@android:drawable/ic_menu_edit"
+                app:tint="@android:color/holo_blue_dark" />
 
+            <!-- Eliminar -->
             <ImageButton
                 android:id="@+id/btnEliminar"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_delete"
                 android:contentDescription="Eliminar"
-                android:backgroundTint="#F44336" />
+                app:srcCompat="@android:drawable/ic_menu_delete"
+                app:tint="@android:color/holo_red_dark" />
+
+            <!-- Compartir -->
+            <ImageButton
+                android:id="@+id/btnCompartir"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Compartir"
+                app:srcCompat="@android:drawable/ic_menu_share"
+                app:tint="@android:color/holo_orange_dark" />
 
         </LinearLayout>
 
     </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
 
-</androidx.cardview.widget.CardView>
+

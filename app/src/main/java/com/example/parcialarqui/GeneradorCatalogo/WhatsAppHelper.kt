@@ -8,6 +8,8 @@ import androidx.core.content.FileProvider
 import java.io.File
 
 class WhatsAppHelper {
+
+
     companion object {
         fun compartirPdfPorWhatsApp(context: Context, rutaPdf: String, numeroTelefono: String = "") {
             try {
@@ -25,32 +27,21 @@ class WhatsAppHelper {
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     setPackage("com.whatsapp")
 
-                    // si hay número, abrir chat directo con ese número
+                    // 👉 Solo poner el número si fue pasado
                     if (numeroTelefono.isNotEmpty()) {
                         putExtra("jid", "$numeroTelefono@s.whatsapp.net")
                     }
                 }
 
-                context.startActivity(intent)
+                context.startActivity(Intent.createChooser(intent, "Compartir con WhatsApp"))
 
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Toast.makeText(context, "No se pudo abrir WhatsApp", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        fun enviarMensajeWhatsApp(context: Context, numeroTelefono: String, mensaje: String) {
-            try {
-                val intent = Intent(Intent.ACTION_VIEW).apply {
-                    data = Uri.parse(
-                        "https://api.whatsapp.com/send?phone=$numeroTelefono&text=${Uri.encode(mensaje)}"
-                    )
-                }
-                context.startActivity(intent)
             } catch (e: Exception) {
                 e.printStackTrace()
                 Toast.makeText(context, "No se pudo abrir WhatsApp", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
+
+
 }

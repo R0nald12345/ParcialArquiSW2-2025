@@ -609,66 +609,7 @@ class ApiGateway {
     // MÉTODOS PARA PEDIDOS:
     //==============================================================================================
 
-    fun obtenerPedidos(callback: ApiCallback<List<PedidoCompleto>>) {
-        val request = Request.Builder()
-            .url("$BASE_URL_PEDIDO/pedidos")
-            .get()
-            .build()
 
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                callback.onError("Error de conexión: ${e.message}")
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                try {
-                    val responseBody = response.body?.string()
-                    if (response.isSuccessful && responseBody != null) {
-                        val jsonArray = JSONArray(responseBody)
-                        val pedidosCompletos = mutableListOf<PedidoCompleto>()
-                        var pedidosProcesados = 0
-
-                        for (i in 0 until jsonArray.length()) {
-                            val obj = jsonArray.getJSONObject(i)
-                            val clienteId = obj.getInt("clienteId")
-                            val repartidorId = obj.getInt("repartidorId")
-
-                            // Obtener datos del cliente
-                            obtenerClientePorId(clienteId) { cliente ->
-                                // Obtener datos del repartidor
-                                obtenerRepartidorPorId(repartidorId) { repartidor ->
-                                    synchronized(pedidosCompletos) {
-                                        pedidosCompletos.add(
-                                            PedidoCompleto(
-                                                id = obj.getInt("id"),
-                                                fecha = obj.getString("fecha"),
-                                                monto = obj.getDouble("monto"),
-                                                clienteId = clienteId,
-                                                repartidorId = repartidorId,
-                                                clienteNombre = cliente?.nombre ?: "Cliente no encontrado",
-                                                clienteTelefono = cliente?.telefono ?: "",
-                                                repartidorNombre = repartidor?.nombre ?: "Repartidor no encontrado",
-                                                repartidorPlaca = repartidor?.placa ?: ""
-                                            )
-                                        )
-                                        pedidosProcesados++
-
-                                        if (pedidosProcesados == jsonArray.length()) {
-                                            callback.onSuccess(pedidosCompletos.sortedBy { it.id })
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        callback.onError("Error del servidor: ${response.code}")
-                    }
-                } catch (e: Exception) {
-                    callback.onError("Error al procesar datos: ${e.message}")
-                }
-            }
-        })
-    }
 
     private fun obtenerClientePorId(id: Int, callback: (Cliente?) -> Unit) {
         val request = Request.Builder()
@@ -745,10 +686,17 @@ class ApiGateway {
     }
 
     //==============================================================================================
-    //  P E D I D O
-    //==============================================================================================
+//  P E D I D O
+//==============================================================================================
 
-    fun crearPedido(fecha: String, monto: Double, clienteId: Int, repartidorId: Int, detalles: List<DetallePedido>, callback: ApiCallback<Boolean>) {
+    fun crearPedido(
+        monto: Double,
+        clienteId: Int,
+        repartidorId: Int,
+        metodoPagoId: Int,
+        detalles: List<DetallePedido>,
+        callback: ApiCallback<Boolean>
+    ) {
         val detallesJson = detalles.joinToString(",") { detalle ->
             """{"productoId":${detalle.productoId},"cantidad":${detalle.cantidad},"precio":${detalle.precio}}"""
         }
@@ -758,12 +706,17 @@ class ApiGateway {
 
         val json = """
     {
-        "monto": $monto,
-        "clienteId": $clienteId,
-        "repartidorId": $repartidorField,
+        "pedido": {
+            "monto": $monto,
+            "clienteId": $clienteId,
+            "repartidorId": $repartidorField,
+            "metodoPagoId": $metodoPagoId
+        },
         "detalles": [$detallesJson]
     }
     """.trimIndent()
+
+        Log.d("ApiGateway", "JSON Crear Pedido: $json")
 
         val body = json.toRequestBody("application/json; charset=utf-8".toMediaType())
         val request = Request.Builder()
@@ -782,23 +735,35 @@ class ApiGateway {
         })
     }
 
-    fun actualizarPedido(id: Int, fecha: String, monto: Double, clienteId: Int, repartidorId: Int, detalles: List<DetallePedido>, callback: ApiCallback<Boolean>) {
+    fun actualizarPedido(
+        id: Int,
+        monto: Double,
+        clienteId: Int,
+        repartidorId: Int,
+        metodoPagoId: Int,
+        detalles: List<DetallePedido>,
+        callback: ApiCallback<Boolean>
+    ) {
         val detallesJson = detalles.joinToString(",") { detalle ->
             """{"productoId":${detalle.productoId},"cantidad":${detalle.cantidad},"precio":${detalle.precio}}"""
         }
 
-        // Si repartidorId es 0, significa "Sin repartidor"
         val repartidorField = if (repartidorId == 0) "null" else repartidorId.toString()
 
         val json = """
     {
-        "id": $id,
-        "monto": $monto,
-        "clienteId": $clienteId,
-        "repartidorId": $repartidorField,
+        "pedido": {
+            "id": $id,
+            "monto": $monto,
+            "clienteId": $clienteId,
+            "repartidorId": $repartidorField,
+            "metodoPagoId": $metodoPagoId
+        },
         "detalles": [$detallesJson]
     }
     """.trimIndent()
+
+        Log.d("ApiGateway", "JSON Actualizar Pedido: $json")
 
         val body = json.toRequestBody("application/json; charset=utf-8".toMediaType())
         val request = Request.Builder()
@@ -833,5 +798,164 @@ class ApiGateway {
             }
         })
     }
+
+    fun obtenerPedidos(callback: ApiCallback<List<PedidoCompleto>>) {
+        val request = Request.Builder()
+            .url("$BASE_URL_PEDIDO/pedidos")
+            .get()
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                callback.onError("Error de conexión: ${e.message}")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                try {
+                    val responseBody = response.body?.string()
+                    if (response.isSuccessful && responseBody != null) {
+                        val jsonArray = JSONArray(responseBody)
+                        val pedidosCompletos = mutableListOf<PedidoCompleto>()
+                        var pedidosProcesados = 0
+
+                        for (i in 0 until jsonArray.length()) {
+                            val obj = jsonArray.getJSONObject(i)
+                            val clienteId = obj.getInt("clienteId")
+                            val repartidorId = obj.optInt("repartidorId", 0)
+                            val metodoPagoId = obj.getInt("metodoPagoId")
+
+                            // Obtener datos del cliente
+                            obtenerClientePorId(clienteId) { cliente ->
+                                // Obtener datos del repartidor
+                                obtenerRepartidorPorId(repartidorId) { repartidor ->
+                                    // Obtener datos del método de pago
+                                    obtenerMetodoPagoPorId(metodoPagoId) { metodoPago ->
+                                        synchronized(pedidosCompletos) {
+                                            pedidosCompletos.add(
+                                                PedidoCompleto(
+                                                    id = obj.getInt("id"),
+                                                    fecha = obj.getString("fecha"),
+                                                    monto = obj.getDouble("monto"),
+                                                    clienteId = clienteId,
+                                                    repartidorId = repartidorId,
+                                                    metodoPagoId = metodoPagoId,
+                                                    clienteNombre = cliente?.nombre ?: "Cliente no encontrado",
+                                                    clienteTelefono = cliente?.telefono ?: "",
+                                                    repartidorNombre = repartidor?.nombre ?: "Sin repartidor",
+                                                    repartidorPlaca = repartidor?.placa ?: "",
+                                                    metodoPagoNombre = metodoPago?.nombre ?: "Desconocido"
+                                                )
+                                            )
+                                            pedidosProcesados++
+
+                                            if (pedidosProcesados == jsonArray.length()) {
+                                                callback.onSuccess(pedidosCompletos.sortedBy { it.id })
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        callback.onError("Error del servidor: ${response.code}")
+                    }
+                } catch (e: Exception) {
+                    callback.onError("Error al procesar datos: ${e.message}")
+                }
+            }
+        })
+    }
+
+    private fun obtenerMetodoPagoPorId(id: Int, callback: (com.example.parcialarqui.metodopago.MetodoPago?) -> Unit) {
+        val request = Request.Builder()
+            .url("$BASE_URL_METODOPAGO/metodospago/$id")
+            .get()
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                callback(null)
+            }
+            override fun onResponse(call: Call, response: Response) {
+                try {
+                    val responseBody = response.body?.string()
+                    if (response.isSuccessful && responseBody != null) {
+                        val obj = JSONObject(responseBody)
+                        callback(com.example.parcialarqui.metodopago.MetodoPago(
+                            id = obj.getInt("id"),
+                            nombre = obj.getString("nombre")
+                        ))
+                    } else {
+                        callback(null)
+                    }
+                } catch (e: Exception) {
+                    callback(null)
+                }
+            }
+        })
+    }
+
+    fun obtenerPedidoPorId(id: Int, callback: ApiCallback<PedidoCompleto>) {
+        val request = Request.Builder()
+            .url("$BASE_URL_PEDIDO/pedidos/$id")
+            .get()
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                callback.onError("Error: ${e.message}")
+            }
+            override fun onResponse(call: Call, response: Response) {
+                try {
+                    val body = response.body?.string()
+                    if (response.isSuccessful && body != null) {
+                        val obj = JSONObject(body)
+
+                        val detalles = mutableListOf<DetallePedido>()
+                        val detallesArray = obj.getJSONArray("detalles")
+                        for (i in 0 until detallesArray.length()) {
+                            val d = detallesArray.getJSONObject(i)
+                            detalles.add(DetallePedido(
+                                pedidoId = obj.getInt("id"),
+                                productoId = d.getInt("productoId"),
+                                cantidad = d.getInt("cantidad"),
+                                precio = d.getDouble("precio")
+                            ))
+                        }
+
+                        val clienteId = obj.getInt("clienteId")
+                        val repartidorId = obj.optInt("repartidorId", 0)
+                        val metodoPagoId = obj.getInt("metodoPagoId")
+
+                        obtenerClientePorId(clienteId) { cliente ->
+                            obtenerRepartidorPorId(repartidorId) { repartidor ->
+                                obtenerMetodoPagoPorId(metodoPagoId) { metodoPago ->
+                                    callback.onSuccess(PedidoCompleto(
+                                        id = obj.getInt("id"),
+                                        fecha = obj.getString("fecha"),
+                                        monto = obj.getDouble("monto"),
+                                        clienteId = clienteId,
+                                        repartidorId = repartidorId,
+                                        metodoPagoId = metodoPagoId,
+                                        clienteNombre = cliente?.nombre ?: "",
+                                        clienteTelefono = cliente?.telefono ?: "",
+                                        repartidorNombre = repartidor?.nombre ?: "",
+                                        repartidorPlaca = repartidor?.placa ?: "",
+                                        metodoPagoNombre = metodoPago?.nombre ?: "",
+                                        detalles = detalles
+                                    ))
+                                }
+                            }
+                        }
+                    } else {
+                        callback.onError("Error ${response.code}")
+                    }
+                } catch (e: Exception) {
+                    callback.onError(e.message ?: "Error")
+                }
+            }
+        })
+    }
+
 
 }

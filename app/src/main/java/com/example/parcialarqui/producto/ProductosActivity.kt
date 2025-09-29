@@ -1,6 +1,6 @@
 package com.example.parcialarqui.producto
 
-import android.content.Intent   // 👈 FALTABA
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
@@ -13,8 +13,7 @@ import com.example.parcialarqui.ApiGateway
 import com.example.parcialarqui.GeneradorCatalogo.CatalogoPdfGenerator
 import com.example.parcialarqui.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import java.io.File   // 👈 FALTABA
+import java.io.File
 
 class ProductosActivity : AppCompatActivity() {
 
@@ -22,7 +21,6 @@ class ProductosActivity : AppCompatActivity() {
     private lateinit var etBuscar: EditText
     private lateinit var tvTitulo: TextView
     private lateinit var fabAgregar: FloatingActionButton
-    private lateinit var bottomNav: BottomNavigationView
     private lateinit var btnGenerarCatalogo: FloatingActionButton
     private var categoria: com.example.parcialarqui.categoria.Categoria? = null
 
@@ -32,10 +30,21 @@ class ProductosActivity : AppCompatActivity() {
 
     private var categoriaId: Int = 0
     private var categoriaNombre: String = ""
+    private lateinit var btnVolver: FloatingActionButton
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_productos)
+
+        btnVolver = findViewById(R.id.btnVolver)
+        btnVolver.setOnClickListener {
+            finish() //  vuelve a CategoriaActivity
+        }
+
+        // Botón atrás en Toolbar
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Productos"
 
         obtenerDatosIntent()
         inicializarVistas()
@@ -51,23 +60,11 @@ class ProductosActivity : AppCompatActivity() {
                 Toast.makeText(this, "No hay productos para generar catálogo", Toast.LENGTH_SHORT).show()
             }
         }
+    }
 
-        val bottomNav = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNav)
-
-        bottomNav.selectedItemId = R.id.nav_home
-
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_home -> {
-                    finish()
-                    true
-                }
-                R.id.nav_car -> {
-                    true
-                }
-                else -> false
-            }
-        }
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressedDispatcher.onBackPressed()
+        return true
     }
 
     private fun generarYCompartirPdfCategoria() {
@@ -93,7 +90,7 @@ class ProductosActivity : AppCompatActivity() {
 
         builder.setPositiveButton("Enviar a WhatsApp") { _, _ ->
             com.example.parcialarqui.GeneradorCatalogo.WhatsAppHelper.compartirPdfPorWhatsApp(
-                this, rutaPdf, "59169153667"
+                this, rutaPdf
             )
         }
 
@@ -119,7 +116,6 @@ class ProductosActivity : AppCompatActivity() {
     private fun obtenerDatosIntent() {
         categoriaId = intent.getIntExtra("categoria_id", 0)
         categoriaNombre = intent.getStringExtra("categoria_nombre") ?: ""
-        // crea la categoría mínima
         categoria = com.example.parcialarqui.categoria.Categoria(
             id = categoriaId,
             nombre = categoriaNombre,
@@ -132,7 +128,6 @@ class ProductosActivity : AppCompatActivity() {
         etBuscar = findViewById(R.id.etBuscar)
         tvTitulo = findViewById(R.id.tvTitulo)
         fabAgregar = findViewById(R.id.fabAgregar)
-        bottomNav = findViewById(R.id.bottomNav)
 
         tvTitulo.text = "Productos ($categoriaNombre)"
 
@@ -149,21 +144,6 @@ class ProductosActivity : AppCompatActivity() {
             onRefresh = { cargarProductos() }
         )
         recyclerView.adapter = adapter
-    }
-
-    private fun configurarBottomNav() {
-        bottomNav.selectedItemId = R.id.nav_car
-
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_home -> {
-                    finish()
-                    true
-                }
-                R.id.nav_car -> true
-                else -> false
-            }
-        }
     }
 
     fun cargarProductos() {
