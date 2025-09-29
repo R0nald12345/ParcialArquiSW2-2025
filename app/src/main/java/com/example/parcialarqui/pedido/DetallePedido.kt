@@ -4,5 +4,6 @@ data class DetallePedido(
     val pedidoId: Int,
     val productoId: Int,
     val cantidad: Int,
-    val precio: Double
+    val precio: Double,
+    val productoNombre: String
 )

@@ -42,6 +42,14 @@
             android:text="Repartidor - Placa" />
 
         <TextView
+            android:id="@+id/tvProductos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Productos: "
+            android:textStyle="italic"
+            android:textColor="@android:color/darker_gray"/>
+
+        <TextView
             android:id="@+id/tvMetodoPago"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -27,6 +27,8 @@ class PedidoAdapter(
         val btnEditar: ImageButton = itemView.findViewById(R.id.btnEditar)
         val btnEliminar: ImageButton = itemView.findViewById(R.id.btnEliminar)
 
+        val tvProductos: TextView = itemView.findViewById(R.id.tvProductos)
+
         val btnCompartir: ImageButton = itemView.findViewById(R.id.btnCompartir)
     }
 
@@ -45,6 +47,10 @@ class PedidoAdapter(
         holder.tvRepartidor.text = "${pedido.repartidorNombre} - ${pedido.repartidorPlaca}"
         holder.tvMonto.text = "Total: Bs. ${String.format("%.2f", pedido.monto)}"
         holder.tvMetodoPago.text = "Pago: ${pedido.metodoPagoNombre}"
+
+        holder.tvProductos.text = pedido.detalles.joinToString { d ->
+            "${d.productoNombre} (x${d.cantidad})"
+        }
 
         holder.btnEditar.setOnClickListener { onEditarClick(pedido) }
         holder.btnEliminar.setOnClickListener { onEliminarClick(pedido) }

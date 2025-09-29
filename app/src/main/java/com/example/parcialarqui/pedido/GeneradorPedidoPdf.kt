@@ -21,6 +21,12 @@ class GeneradorPedidoPdf {
             doc.add(Paragraph("PEDIDO #${String.format("%03d", pedido.id)}").setFontSize(20f).setBold())
             doc.add(Paragraph("Fecha: ${pedido.fecha}"))
             doc.add(Paragraph("Cliente: ${pedido.clienteNombre}"))
+            doc.add(Paragraph("Detalles del pedido:").setBold())
+            for (detalle in pedido.detalles) {
+                doc.add(
+                    Paragraph("${detalle.productoNombre} x${detalle.cantidad} - Bs. ${String.format("%.2f", detalle.precio)}")
+                )
+            }
             doc.add(Paragraph("Total: Bs. ${String.format("%.2f", pedido.monto)}"))
 
             doc.close()

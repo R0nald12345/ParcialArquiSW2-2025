@@ -30,9 +30,8 @@ class DetalleAdapter(
 
     override fun onBindViewHolder(holder: DetalleViewHolder, position: Int) {
         val detalle = detalles[position]
-        val producto = productos.find { it.id == detalle.productoId }
 
-        holder.tvProducto.text = producto?.nombre ?: "Producto ${detalle.productoId}"
+        holder.tvProducto.text = detalle.productoNombre // 🔹 directo del backend
         holder.tvCantidad.text = detalle.cantidad.toString()
         holder.tvPrecio.text = "Bs. ${String.format("%.2f", detalle.precio)}"
 

@@ -13,5 +13,4 @@ data class PedidoCompleto(
     val repartidorPlaca: String,
     val detalles: List<DetallePedido> = emptyList(),
     val metodoPagoNombre: String = ""
-
 )

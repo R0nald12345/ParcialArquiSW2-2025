@@ -919,7 +919,8 @@ class ApiGateway {
                                 pedidoId = obj.getInt("id"),
                                 productoId = d.getInt("productoId"),
                                 cantidad = d.getInt("cantidad"),
-                                precio = d.getDouble("precio")
+                                precio = d.getDouble("precio"),
+                                productoNombre = d.getString("productoNombre")
                             ))
                         }
 

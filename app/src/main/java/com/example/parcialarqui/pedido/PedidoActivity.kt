@@ -352,7 +352,13 @@ class PedidoActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val detalle = DetallePedido(pedidoExistente?.id ?: 0, productoSeleccionado.id, cantidad, precio)
+            val detalle = DetallePedido(
+                pedidoExistente?.id ?: 0,
+                productoSeleccionado.id,
+                cantidad,
+                precio, // ✅ este es Double
+                productoSeleccionado.nombre // ✅ ahora sí el String va en productoNombre
+            )
             detalleAdapterLocal.agregarDetalle(detalle)
             calcularMontoTotal(etMonto)
 
