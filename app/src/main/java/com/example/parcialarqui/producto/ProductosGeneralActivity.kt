@@ -1,10 +1,9 @@
-package com.example.parcialarqui.categoria
+package com.example.parcialarqui.producto
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -15,33 +14,33 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.parcialarqui.ApiGateway
 import com.example.parcialarqui.R
+import com.example.parcialarqui.categoria.CategoriaActivity
 import com.example.parcialarqui.cliente.ClienteActivity
 import com.example.parcialarqui.metodopago.MetodoPagoActivity
 import com.example.parcialarqui.pedido.PedidoActivity
-import com.example.parcialarqui.producto.ProductosGeneralActivity
-import com.example.parcialarqui.producto.ProductosFilterActivity
 import com.example.parcialarqui.repartidor.RepartidorActivity
 import com.google.android.material.navigation.NavigationView
 
-class CategoriaActivity : AppCompatActivity() {
+class ProductosGeneralActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var etBuscar: EditText
     private lateinit var tvTitulo: TextView
-    private lateinit var btnAgregar: ImageView
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toolbar: Toolbar
     private lateinit var navigationView: NavigationView
 
     private val apiGateway = ApiGateway()
-    private val categorias = mutableListOf<Categoria>()
-    private lateinit var adapter: CategoriaAdapter
+    private val productos = mutableListOf<Producto>()
+    private lateinit var adapter: ProductoAdapter
 
+    // ⭐ Estrategia para obtener TODOS los productos (sin categoría)
+    private lateinit var strategy: ProductoStrategy
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_categoria)
+        setContentView(R.layout.activity_productos_general)
 
         drawerLayout = findViewById(R.id.drawerLayout)
         toolbar = findViewById(R.id.toolbar)
@@ -58,14 +57,8 @@ class CategoriaActivity : AppCompatActivity() {
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_inicio -> {
-                    // ⭐ MODIFICADO: Navegar a ProductosGeneralActivity
-                    startActivity(Intent(this, ProductosGeneralActivity::class.java))
-                    drawerLayout.closeDrawers()
-                    true
-                }
-                R.id.nav_productos -> {
-                    // ⭐ NUEVO: Navegar a ProductosFilterActivity (con dropdown)
-                    startActivity(Intent(this, ProductosFilterActivity::class.java))
+                    // ⭐ Navegar a las categorías
+                    startActivity(Intent(this, CategoriaActivity::class.java))
                     drawerLayout.closeDrawers()
                     true
                 }
@@ -94,94 +87,53 @@ class CategoriaActivity : AppCompatActivity() {
         }
 
         inicializarVistas()
+
+        // ⭐ IMPORTANTE: Usar estrategia para obtener TODOS los productos
+        strategy = ObtenerTodosProductos()
+
         configurarRecyclerView()
-        cargarCategorias()
+        cargarProductos()
     }
 
     private fun inicializarVistas() {
         recyclerView = findViewById(R.id.recyclerView)
         etBuscar = findViewById(R.id.etBuscar)
         tvTitulo = findViewById(R.id.tvTitulo)
-        btnAgregar = findViewById(R.id.btnAgregar)
 
-        tvTitulo.text = "Categorías"
-
-        btnAgregar.setOnClickListener {
-            mostrarDialogCrearCategoria()
-        }
-
+        tvTitulo.text = "Todos los Productos"
     }
 
     private fun configurarRecyclerView() {
         recyclerView.layoutManager = LinearLayoutManager(this)
-
-        adapter = CategoriaAdapter(
-            lista = categorias,
-            onRefresh = { cargarCategorias() } // 👈 ahora solo recibe onRefresh
+        adapter = ProductoAdapter(
+            productos,
+            onItemClick = { producto ->
+                Toast.makeText(this, "Producto: ${producto.nombre}", Toast.LENGTH_SHORT).show()
+            },
+            onRefresh = { cargarProductos() }
         )
-
         recyclerView.adapter = adapter
     }
 
-    fun cargarCategorias() {
-        Log.d("CategoriaActivity", "Cargando categorías...")
+    fun cargarProductos() {
+        Log.d("ProductosGeneralActivity", "Cargando TODOS los productos...")
 
-        apiGateway.obtenerCategorias(object : ApiGateway.ApiCallback<List<Categoria>> {
-            override fun onSuccess(data: List<Categoria>) {
-                Log.d("CategoriaActivity", "Categorías cargadas: ${data.size}")
-
+        // ⭐ Usa la estrategia para obtener todos los productos
+        strategy.obtenerProductos(apiGateway, object : ApiGateway.ApiCallback<List<Producto>> {
+            override fun onSuccess(data: List<Producto>) {
                 runOnUiThread {
-                    categorias.clear()
-                    categorias.addAll(data)
+                    productos.clear()
+                    productos.addAll(data)
                     adapter.notifyDataSetChanged()
+                    Log.d("ProductosGeneralActivity", "Productos cargados: ${data.size}")
                 }
             }
 
             override fun onError(error: String) {
-                Log.e("CategoriaActivity", "Error: $error")
                 runOnUiThread {
-                    Toast.makeText(this@CategoriaActivity, "Error: $error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@ProductosGeneralActivity, "Error: $error", Toast.LENGTH_LONG).show()
                 }
             }
         })
     }
-
-    private fun mostrarDialogCrearCategoria() {
-        val builder = android.app.AlertDialog.Builder(this)
-        builder.setTitle("Nueva Categoría")
-
-        val layout = layoutInflater.inflate(R.layout.dialog_categoria, null)
-        builder.setView(layout)
-
-        val etNombre = layout.findViewById<EditText>(R.id.etNombre)
-        val etDescripcion = layout.findViewById<EditText>(R.id.etDescripcion)
-
-        builder.setPositiveButton("Guardar") { _, _ ->
-            val nueva = Categoria(
-                id = 0,
-                nombre = etNombre.text.toString(),
-                descripcion = etDescripcion.text.toString()
-            )
-            apiGateway.crearCategoria(nueva, object : ApiGateway.ApiCallback<Boolean> {
-                override fun onSuccess(data: Boolean) {
-                    runOnUiThread { cargarCategorias() }
-                }
-
-                override fun onError(error: String) {
-                    runOnUiThread {
-                        Toast.makeText(
-                            this@CategoriaActivity,
-                            "Error: $error",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            })
-        }
-
-        builder.setNegativeButton("Cancelar", null)
-        builder.show()
-    }
-
-
 }

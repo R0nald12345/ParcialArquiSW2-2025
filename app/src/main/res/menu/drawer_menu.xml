@@ -4,6 +4,11 @@
         android:icon="@drawable/ic_home"
         android:title="Inicio"/>
     <item
+        android:id="@+id/nav_productos"
+        android:icon="@drawable/ic_shopping"
+        android:title="Productos"/>
+    
+    <item
         android:id="@+id/nav_metodo_pago"
         android:icon="@drawable/ic_menu"
         android:title="Métodos de Pago"/>

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.parcialarqui.ApiGateway
 import com.example.parcialarqui.R
@@ -39,7 +40,6 @@ class ProductoAdapter(
         holder.tvPrecio.text = "Bs. ${producto.precio}"
         holder.ivImagen.setImageResource(R.drawable.ic_producto_default)
 
-        // Click en tarjeta
         holder.itemView.setOnClickListener { onItemClick(producto) }
         holder.btnInfo.setOnClickListener { onItemClick(producto) }
 
@@ -57,7 +57,6 @@ class ProductoAdapter(
             val etDescripcion = layout.findViewById<EditText>(R.id.etDescripcion)
             val etStock = layout.findViewById<EditText>(R.id.etStock)
 
-            // Prellenar datos
             etNombre.setText(producto.nombre)
             etPrecio.setText(producto.precio.toString())
             etDescripcion.setText(producto.descripcion)
@@ -73,13 +72,23 @@ class ProductoAdapter(
                 val api = ApiGateway()
                 api.actualizarProducto(editado, object : ApiGateway.ApiCallback<Boolean> {
                     override fun onSuccess(data: Boolean) {
-                        (ctx as? ProductosActivity)?.runOnUiThread { onRefresh() }
+                        if (ctx is AppCompatActivity) {
+                            ctx.runOnUiThread { 
+                                onRefresh()
+                            }
+                        } else if (ctx is android.app.Activity) {
+                            (ctx as android.app.Activity).runOnUiThread { 
+                                onRefresh()
+                            }
+                        }
                     }
+
                     override fun onError(error: String) {
-                        Log.e("ProductoAdapter", "Error al actualizar: $error")
+                        Log.e("ProductoAdapter", "Error: $error")
                     }
                 })
             }
+
             builder.setNegativeButton("Cancelar", null)
             builder.show()
         }
@@ -89,15 +98,23 @@ class ProductoAdapter(
             val ctx = holder.itemView.context
             android.app.AlertDialog.Builder(ctx)
                 .setTitle("Eliminar Producto")
-                .setMessage("¿Seguro que quieres eliminar ${producto.nombre}?")
+                .setMessage("¿Seguro que deseas eliminar ${producto.nombre}?")
                 .setPositiveButton("Sí") { _, _ ->
                     val api = ApiGateway()
                     api.eliminarProducto(producto.id, object : ApiGateway.ApiCallback<Boolean> {
                         override fun onSuccess(data: Boolean) {
-                            (ctx as? ProductosActivity)?.runOnUiThread { onRefresh() }
+                            if (ctx is AppCompatActivity) {
+                                ctx.runOnUiThread { 
+                                    onRefresh()
+                                }
+                            } else if (ctx is android.app.Activity) {
+                                (ctx as android.app.Activity).runOnUiThread { 
+                                    onRefresh()
+                                }
+                            }
                         }
                         override fun onError(error: String) {
-                            Log.e("ProductoAdapter", "Error al eliminar: $error")
+                            Log.e("ProductoAdapter", "Error: $error")
                         }
                     })
                 }

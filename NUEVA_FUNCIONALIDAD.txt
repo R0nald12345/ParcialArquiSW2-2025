@@ -1,0 +1,180 @@
+📱 NUEVA FUNCIONALIDAD: PRODUCTOS CON DROPDOWN
+
+═══════════════════════════════════════════════════════════════
+
+🎯 LO QUE SE AGREGÓ:
+
+1. Nuevo Item en Menú: "Productos"
+2. Nueva Actividad: ProductosFilterActivity
+3. Nuevo Layout: activity_productos_filter.xml
+4. Dropdown (Spinner) para seleccionar categoría
+
+═══════════════════════════════════════════════════════════════
+
+📂 ARCHIVOS CREADOS:
+
+✅ ProductosFilterActivity.kt
+   📍 Ubicación: app/src/main/java/com/example/parcialarqui/producto/
+   🎯 Muestra TODOS los productos
+   🔧 Con dropdown para filtrar por categoría
+   🏗️ Aplica Strategy Pattern dinámicamente
+
+✅ activity_productos_filter.xml
+   📍 Ubicación: app/src/main/res/layout/
+   🎨 DrawerLayout con menú
+   📋 Spinner (dropdown) de categorías
+   📱 RecyclerView para productos
+
+═══════════════════════════════════════════════════════════════
+
+🔧 ARCHIVOS MODIFICADOS:
+
+✅ drawer_menu.xml
+   ➕ Agregado: <item android:id="@+id/nav_productos" ... />
+
+✅ CategoriaActivity.kt
+   ➕ Import: ProductosFilterActivity
+   ➕ Nav listener: R.id.nav_productos → ProductosFilterActivity
+
+✅ AndroidManifest.xml
+   ➕ Registro de ProductosFilterActivity
+
+═══════════════════════════════════════════════════════════════
+
+🎯 FLUJO DE NAVEGACIÓN:
+
+CategoriaActivity (Menú)
+    ├─ Inicio → ProductosGeneralActivity
+    ├─ Productos ⭐ → ProductosFilterActivity (NUEVO)
+    ├─ Métodos Pago → MetodoPagoActivity
+    ├─ Repartidores → RepartidorActivity
+    ├─ Clientes → ClienteActivity
+    └─ Pedidos → PedidoActivity
+
+═══════════════════════════════════════════════════════════════
+
+✨ CARACTERÍSTICA PRINCIPAL:
+
+DROPDOWN (SPINNER) DE CATEGORÍAS
+    ↓
+┌─────────────────────────────────────────────┐
+│ Spinner                                     │
+├─────────────────────────────────────────────┤
+│ • Todos los Productos   ← Por defecto      │
+│ • Categoría 1           ← Filtra por esta  │
+│ • Categoría 2           ← Filtra por esta  │
+│ • Categoría 3           ← Filtra por esta  │
+└─────────────────────────────────────────────┘
+    ↓ (onChange)
+Strategy cambia dinámicamente:
+    ↓
+Si "Todos" → ObtenerTodosProductos()
+Si "Cat 1" → ObtenerProductosPorCategoria(1)
+Si "Cat 2" → ObtenerProductosPorCategoria(2)
+    ↓
+RecyclerView se actualiza
+
+═══════════════════════════════════════════════════════════════
+
+🏗️ PATRÓN STRATEGY APLICADO:
+
+strategy = if (spinner selected = "Todos")
+    ObtenerTodosProductos()
+else
+    ObtenerProductosPorCategoria(categoriaId)
+
+⭐ La estrategia se cambia EN TIEMPO REAL cuando
+   el usuario selecciona un item del dropdown
+
+═══════════════════════════════════════════════════════════════
+
+🎨 INTERFAZ DE USUARIO:
+
+┌──────────────────────────────────┐
+│ [≡] Toolbar: "Productos"         │
+├──────────────────────────────────┤
+│ Título: "Todos los Productos"    │
+│                                  │
+│ ┌────────────────────────────┐   │
+│ │ Spinner ▼                  │   │ ← Dropdown
+│ │ • Todos los Productos ✓    │   │ ← Por defecto
+│ │ • Comida Rápida            │
+│ │ • Bebidas                  │
+│ │ • Postres                  │
+│ └────────────────────────────┘   │
+│                                  │
+│ [Buscar producto...]             │
+├──────────────────────────────────┤
+│ RecyclerView (Productos)         │
+│                                  │
+│ ┌────────────────────────────┐   │
+│ │ Producto 1      |$ precio  │   │
+│ ├────────────────────────────┤   │
+│ │ Producto 2      |$ precio  │   │
+│ ├────────────────────────────┤   │
+│ │ Producto 3      |$ precio  │   │
+│ └────────────────────────────┘   │
+│                                  │
+└──────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════
+
+🔄 CÓMO FUNCIONA EL DROPDOWN:
+
+1. Usuario abre la app
+2. Navega a Menu → Productos
+3. Se abre ProductosFilterActivity
+4. Spinner se llena con categorías (desde API)
+5. Por defecto: "Todos los Productos" seleccionado
+6. Strategy = ObtenerTodosProductos()
+7. Se cargan y muestran TODOS los productos
+
+8. Usuario selecciona una categoría del dropdown
+9. ¡Activador! onItemSelected se ejecuta
+10. Strategy = ObtenerProductosPorCategoria(id)
+11. Se cargan y muestran productos de esa categoría
+12. Título se actualiza: "Productos - NombreCategoria"
+
+═══════════════════════════════════════════════════════════════
+
+📊 FLUJO INTERNO:
+
+ProductosFilterActivity
+    │
+    ├─ cargarCategorias()
+    │   └─ API → obtenerCategorias()
+    │       └─ Spinner se llena con categorías
+    │
+    ├─ spinnerCategorias.onItemSelectedListener
+    │   ├─ Si posición = 0 → strategy = ObtenerTodosProductos()
+    │   └─ Si posición > 0 → strategy = ObtenerProductosPorCategoria(id)
+    │
+    └─ cargarProductos()
+        └─ strategy.obtenerProductos(apiGateway, callback)
+            └─ RecyclerView.notifyDataSetChanged()
+
+═══════════════════════════════════════════════════════════════
+
+✅ PASOS PARA USAR:
+
+1. Compilar el proyecto
+2. Ejecutar en emulador/dispositivo
+3. En el menú, hacer click en "Productos"
+4. Se abre ProductosFilterActivity
+5. Dropdown muestra "Todos los Productos" por defecto
+6. Hacer click en el dropdown
+7. Seleccionar una categoría
+8. ¡Los productos se actualizan automáticamente!
+
+═══════════════════════════════════════════════════════════════
+
+🎓 RESUMEN:
+
+✅ Nueva actividad con Spinner (dropdown)
+✅ Estrategia se cambia al seleccionar categoría
+✅ Patrón Strategy completamente funcional
+✅ Interfaz intuitiva y clara
+✅ Reutiliza ProductoAdapter
+✅ Integrado con el menú drawer
+✅ Sin modificar .md (como solicitaste)
+

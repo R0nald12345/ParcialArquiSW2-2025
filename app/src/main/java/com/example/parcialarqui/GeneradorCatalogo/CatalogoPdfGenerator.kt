@@ -82,4 +82,65 @@ class CatalogoPdfGenerator {
             callback(null)
         }
     }
+
+    // ⭐ NUEVO: Método para generar PDF general sin categoría específica
+    fun generarCatalogoPdf(
+        context: Context,
+        titulo: String,
+        productos: List<Producto>,
+        callback: (String?) -> Unit
+    ) {
+        try {
+            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+            val fileName = "Catalogo_${titulo.replace(" ", "_")}_$timeStamp.pdf"
+
+            val downloadsDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+            val file = File(downloadsDir, fileName)
+
+            val pdfWriter = PdfWriter(FileOutputStream(file))
+            val pdfDocument = PdfDocument(pdfWriter)
+            val document = Document(pdfDocument)
+
+            // Título
+            document.add(
+                Paragraph(titulo.uppercase())
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setFontSize(20f)
+                    .setBold()
+            )
+            document.add(Paragraph("Fecha: ${SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())}"))
+            document.add(Paragraph(" "))
+
+            // Tabla de productos
+            val table = Table(UnitValue.createPercentArray(floatArrayOf(40f, 40f, 20f)))
+                .setWidth(UnitValue.createPercentValue(100f))
+
+            table.addHeaderCell("Producto")
+            table.addHeaderCell("Descripción")
+            table.addHeaderCell("Precio (Bs.)")
+
+            productos.forEach { producto ->
+                table.addCell(producto.nombre)
+                table.addCell(producto.descripcion)
+                table.addCell("${producto.precio}")
+            }
+
+            document.add(table)
+
+            document.add(Paragraph(" "))
+            document.add(
+                Paragraph("¡Contáctanos para realizar tu pedido!")
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setFontSize(12f)
+                    .setBold()
+            )
+
+            document.close()
+            callback(file.absolutePath)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            callback(null)
+        }
+    }
 }

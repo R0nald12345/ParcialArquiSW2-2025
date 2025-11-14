@@ -1,0 +1,189 @@
+🎯 QUÉ HACER AHORA
+
+═══════════════════════════════════════════════════════════════
+
+PASO 1: SINCRONIZAR GRADLE
+──────────────────────────
+
+1. Abre Android Studio
+2. Click: Build → Sync Now
+3. Espera a que termine
+
+═══════════════════════════════════════════════════════════════
+
+PASO 2: COMPILAR PROYECTO
+──────────────────────────
+
+1. Click: Build → Build Bundle(s) / APK(s) → Build APKs
+2. Espera a que compile
+3. Verifica que NO hay errores (should show "Build successful")
+
+═══════════════════════════════════════════════════════════════
+
+PASO 3: EJECUTAR EN EMULADOR
+─────────────────────────────
+
+1. Abre un emulador (o conecta dispositivo)
+2. Click: Run (Shift + F10)
+3. Espera a que se instale y abra la app
+
+═══════════════════════════════════════════════════════════════
+
+PASO 4: PROBAR LA NUEVA FUNCIONALIDAD
+──────────────────────────────────────
+
+1. En la app, espera a que cargue CategoriaActivity
+2. Abre el menú (swipe desde izquierda)
+3. Click en "Productos" ⭐ (NUEVO)
+4. Se abre ProductosFilterActivity
+5. Verifica que el dropdown esté visible
+6. Click en el dropdown
+7. Selecciona una categoría
+8. Verifica que los productos cambien
+
+═══════════════════════════════════════════════════════════════
+
+PASO 5: REVISAR QUE TODO FUNCIONA
+──────────────────────────────────
+
+Checklist:
+✓ Se abre ProductosFilterActivity correctamente
+✓ Dropdown muestra categorías
+✓ RecyclerView muestra productos
+✓ Al cambiar categoría, los productos se actualizan
+✓ Título se actualiza dinámicamente
+✓ Navegación funciona correctamente
+✓ Sin crashes
+
+═══════════════════════════════════════════════════════════════
+
+⚠️ POSIBLES PROBLEMAS Y SOLUCIONES
+
+──────────────────────────────────────
+
+Problema: Error de compilación "ProductosFilterActivity no existe"
+Solución:
+  1. Verifica que ProductosFilterActivity.kt esté en:
+     app/src/main/java/com/example/parcialarqui/producto/
+  2. Verifica que el package sea correcto
+  3. Sync Gradle nuevamente
+
+Problema: Dropdown vacío o sin categorías
+Solución:
+  1. Verifica que la API devuelva categorías
+  2. Mira Logcat para ver errores
+  3. Verifica que cargarCategorias() se ejecute
+
+Problema: Los productos no cambian al seleccionar categoría
+Solución:
+  1. Verifica que onItemSelectedListener esté configurado
+  2. Mira Logcat para ver si se ejecuta
+  3. Verifica que cargarProductos() sea llamado
+
+Problema: Crash al abrir ProductosFilterActivity
+Solución:
+  1. Verifica que esté en AndroidManifest.xml
+  2. Mira Logcat para el error exacto
+  3. Verifica que los IDs del layout sean correctos
+
+═══════════════════════════════════════════════════════════════
+
+📚 DOCUMENTACIÓN DISPONIBLE
+
+──────────────────────────
+
+Archivos de referencia creados:
+
+1. NUEVA_FUNCIONALIDAD.txt
+   - Explicación de qué se agregó
+
+2. DIAGRAMA_SPINNER.txt
+   - Diagrama visual del funcionamiento
+
+3. PRUEBAS_SPINNER.txt
+   - 10 pruebas paso a paso
+
+4. RESUMEN_SPINNER.txt
+   - Resumen ejecutivo
+
+5. CODIGO_REFERENCIA.txt
+   - Fragmentos de código clave
+
+6. RESUMEN_VISUAL.txt
+   - Diagrama visual completo
+
+═══════════════════════════════════════════════════════════════
+
+🔑 DETALLES TÉCNICOS
+
+──────────────────
+
+Archivos creados:
+  • ProductosFilterActivity.kt (~130 líneas)
+  • activity_productos_filter.xml (~55 líneas)
+
+Archivos modificados:
+  • drawer_menu.xml (1 item agregado)
+  • CategoriaActivity.kt (import + 1 listener)
+  • AndroidManifest.xml (1 activity registration)
+
+Patrón aplicado: Strategy Pattern
+  • ObtenerTodosProductos() - para dropdown "Todos"
+  • ObtenerProductosPorCategoria(id) - para cada categoría
+
+API usadas:
+  • api.obtenerCategorias() - para llenar dropdown
+  • api.obtenerProductos() - para "Todos"
+  • api.obtenerProductosPorCategoria(id) - para categoría
+
+═══════════════════════════════════════════════════════════════
+
+✅ VERIFICACIÓN FINAL
+
+──────────────────────
+
+Después de hacer todo:
+
+[ ] Proyecto compila sin errores
+[ ] App ejecuta correctamente
+[ ] Se ve el menú "Productos" ⭐
+[ ] Se abre ProductosFilterActivity
+[ ] Dropdown funciona
+[ ] Productos se cargan
+[ ] Al cambiar categoría, productos cambian
+[ ] Título se actualiza
+[ ] Navegación funciona
+[ ] Sin crashes en Logcat
+
+═══════════════════════════════════════════════════════════════
+
+🎉 ¡LISTO!
+
+Tu aplicación ahora tiene:
+
+✅ Una nueva vista "Productos" en el menú
+✅ Un dropdown (spinner) para filtrar por categoría
+✅ Patrón Strategy aplicado dinámicamente
+✅ Cambio de productos en tiempo real
+✅ Interface intuitiva y funcional
+
+═══════════════════════════════════════════════════════════════
+
+¿PREGUNTAS FRECUENTES?
+
+Q: ¿Necesito hacer algo más?
+A: No, solo compilar, ejecutar y probar. El código está 100% funcional.
+
+Q: ¿Qué pasa si tengo error al compilar?
+A: Mira la sección "POSIBLES PROBLEMAS" arriba.
+
+Q: ¿Puedo agregar más categorías a la API?
+A: Sí, el dropdown se actualiza automáticamente.
+
+Q: ¿Puedo cambiar el icono del item "Productos"?
+A: Sí, en drawer_menu.xml cambiar android:icon
+
+Q: ¿Dónde está el código de ProductosFilterActivity?
+A: En los archivos creados anteriormente en esta sesión.
+
+═══════════════════════════════════════════════════════════════

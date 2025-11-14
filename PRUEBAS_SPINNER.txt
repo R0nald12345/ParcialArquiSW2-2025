@@ -1,0 +1,239 @@
+🧪 INSTRUCCIONES DE PRUEBA
+
+═══════════════════════════════════════════════════════════════
+
+PARA PROBAR LA NUEVA FUNCIONALIDAD:
+
+═══════════════════════════════════════════════════════════════
+
+✅ PRUEBA 1: Compilar el Proyecto
+
+Pasos:
+1. Abre Android Studio
+2. Sincroniza Gradle (Build → Sync Now)
+3. Compila el proyecto (Build → Build Bundle(s) / APK(s) → Build APKs)
+4. Verifica que NO hay errores
+
+Esperado:
+✓ Compilación exitosa
+✓ No hay errores de sintaxis
+✓ No hay errores de recursos
+
+═══════════════════════════════════════════════════════════════
+
+✅ PRUEBA 2: Ejecutar en Emulador/Dispositivo
+
+Pasos:
+1. Conecta emulador o dispositivo
+2. Click en el botón Run (Shift + F10)
+3. Espera a que la app se abra
+
+Esperado:
+✓ La app se abre correctamente
+✓ Carga sin crashes
+✓ Se muestra MainActivity
+
+═══════════════════════════════════════════════════════════════
+
+✅ PRUEBA 3: Navegar a ProductosFilterActivity
+
+Pasos:
+1. En la app, espera a que cargue CategoriaActivity
+2. Abre el menú lateral (swipe desde izquierda o click ≡)
+3. Haz click en "Productos" ⭐ NUEVO
+
+Esperado:
+✓ Se abre ProductosFilterActivity
+✓ Muestra toolbar "Productos"
+✓ Muestra el spinner (dropdown)
+✓ El spinner dice "Todos los Productos" por defecto
+✓ Debajo hay un RecyclerView con productos
+
+═══════════════════════════════════════════════════════════════
+
+✅ PRUEBA 4: Verificar que cargue TODOS los productos
+
+Pasos:
+1. En ProductosFilterActivity
+2. Observa el RecyclerView
+3. Debería mostrar MUCHOS productos (de TODAS las categorías)
+
+Esperado:
+✓ RecyclerView NO está vacío
+✓ Muestra productos (nombre, precio)
+✓ Hay scroll si hay muchos
+
+═══════════════════════════════════════════════════════════════
+
+✅ PRUEBA 5: Probar el Dropdown (Spinner)
+
+Pasos:
+1. En ProductosFilterActivity
+2. Haz click en el spinner (dropdown)
+3. Debería mostrar opciones:
+   • Todos los Productos (✓ seleccionado)
+   • Comida Rápida
+   • Bebidas
+   • Postres
+   • (otras categorías si existen)
+
+Esperado:
+✓ El dropdown se abre
+✓ Se ven todas las categorías
+✓ "Todos los Productos" está marcado con ✓
+
+═══════════════════════════════════════════════════════════════
+
+✅ PRUEBA 6: Seleccionar una categoría
+
+Pasos:
+1. En ProductosFilterActivity
+2. Haz click en el spinner
+3. Selecciona una categoría (ej: "Bebidas")
+4. Observa qué pasa
+
+Esperado:
+✓ El spinner dice ahora "Bebidas"
+✓ El título cambió a "Productos - Bebidas"
+✓ RecyclerView se actualiza
+✓ SOLO muestra productos de Bebidas
+✓ Carga desaparece y aparecen productos
+✓ NO hay crash
+
+═══════════════════════════════════════════════════════════════
+
+✅ PRUEBA 7: Cambiar entre Categorías
+
+Pasos:
+1. Selecciona "Bebidas"
+2. Observa los productos
+3. Spinner → Selecciona "Postres"
+4. Observa los productos nuevos
+5. Spinner → Selecciona "Todos los Productos"
+
+Esperado:
+✓ Los productos cambian dinámicamente
+✓ El título se actualiza
+✓ RecyclerView se actualiza instantáneamente
+✓ NO hay lag o demora excesiva
+✓ Transiciones suaves
+
+═══════════════════════════════════════════════════════════════
+
+✅ PRUEBA 8: Verificar que el Patrón Strategy funciona
+
+Pasos:
+1. Abre Android Studio → Logcat
+2. Busca: "ProductosFilterActivity"
+3. En ProductosFilterActivity:
+   - Spinner → "Todos los Productos"
+   - Mira los logs
+4. Spinner → Selecciona una categoría
+   - Mira los logs
+
+Esperado en Logcat:
+Si selecciona "Todos":
+✓ Log: "Cargando productos (Strategy aplicada)..."
+✓ Log: "Productos cargados: [cantidad]"
+✓ api.obtenerProductos() fue llamado
+
+Si selecciona una categoría:
+✓ Log: "Cargando productos (Strategy aplicada)..."
+✓ Log: "Productos cargados: [cantidad menor]"
+✓ api.obtenerProductosPorCategoria() fue llamado
+
+═══════════════════════════════════════════════════════════════
+
+✅ PRUEBA 9: Navegar desde otras vistas
+
+Pasos:
+1. En ProductosFilterActivity
+2. Abre el menú
+3. Haz click en "Inicio"
+4. Debería ir a ProductosGeneralActivity
+5. Abre el menú nuevamente
+6. Haz click en "Productos"
+7. Debería volver a ProductosFilterActivity
+
+Esperado:
+✓ Navegación fluida
+✓ NO hay crashes
+✓ Los datos se cargan correctamente cada vez
+
+═══════════════════════════════════════════════════════════════
+
+✅ PRUEBA 10: Revisar estructura de archivos
+
+Verifica que existan:
+
+✓ app/src/main/java/com/example/parcialarqui/producto/
+  └─ ProductosFilterActivity.kt
+
+✓ app/src/main/res/layout/
+  └─ activity_productos_filter.xml
+
+✓ app/src/main/res/menu/
+  └─ drawer_menu.xml (modificado - contiene nav_productos)
+
+✓ app/src/main/
+  └─ AndroidManifest.xml (modificado - registra ProductosFilterActivity)
+
+═══════════════════════════════════════════════════════════════
+
+❌ TROUBLESHOOTING (Si algo no funciona)
+
+Problema: El spinner está vacío
+Solución:
+- Verifica que la API devuelva categorías
+- Mira Logcat para errores
+- Usa Postman para probar la API
+
+Problema: Los productos NO se actualizan al cambiar categoría
+Solución:
+- Verifica que onItemSelectedListener esté configurado
+- Mira Logcat para ver si se ejecuta onItemSelected
+- Verifica que cargarProductos() sea llamado
+
+Problema: Crash al abrir ProductosFilterActivity
+Solución:
+- Verifica que ProductosFilterActivity esté en AndroidManifest.xml
+- Verifica que el layout tenga los IDs correctos
+- Mira Logcat para el stack trace del error
+
+Problema: El spinner dice "Todos los Productos" pero muestra pocos
+Solución:
+- Verifica que ObtenerTodosProductos() llame a api.obtenerProductos()
+- Verifica que la API devuelva todos los productos
+- Mira Logcat para ver cuántos productos se recibieron
+
+═══════════════════════════════════════════════════════════════
+
+✅ CHECKLIST DE PRUEBAS:
+
+[ ] Proyecto compila sin errores
+[ ] App se ejecuta sin crashes
+[ ] Se abre ProductosFilterActivity correctamente
+[ ] Spinner muestra "Todos los Productos" por defecto
+[ ] RecyclerView muestra TODOS los productos
+[ ] Spinner se abre y muestra categorías
+[ ] Seleccionar categoría actualiza productos
+[ ] Título se actualiza cuando cambias categoría
+[ ] Logs muestran que Strategy se ejecuta
+[ ] Navegación entre vistas funciona
+[ ] Manejo de errores es adecuado
+[ ] No hay memory leaks
+
+═══════════════════════════════════════════════════════════════
+
+🎓 RESULTADO ESPERADO:
+
+Después de ejecutar todas las pruebas:
+
+✓ Una nueva actividad ProductosFilterActivity funciona
+✓ El spinner (dropdown) carga categorías dinámicamente
+✓ Al seleccionar una categoría, los productos cambian
+✓ El patrón Strategy se aplica correctamente
+✓ La navegación es fluida y sin errores
+✓ Todo compila y ejecuta sin crashes
+
+═══════════════════════════════════════════════════════════════

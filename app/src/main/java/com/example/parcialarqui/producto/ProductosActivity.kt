@@ -32,6 +32,9 @@ class ProductosActivity : AppCompatActivity() {
     private var categoriaNombre: String = ""
     private lateinit var btnVolver: FloatingActionButton
 
+    // ⭐ MODIFICADO: ahora sí tenemos la estrategia del patrón Strategy
+    private lateinit var strategy: ProductoStrategy
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,21 +42,38 @@ class ProductosActivity : AppCompatActivity() {
 
         btnVolver = findViewById(R.id.btnVolver)
         btnVolver.setOnClickListener {
-            finish() //  vuelve a CategoriaActivity
+            finish()
         }
 
-        // Botón atrás en Toolbar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Productos"
 
         obtenerDatosIntent()
         inicializarVistas()
+
+        // ⭐ MODIFICADO: asignamos strategy ANTES de cargar productos
+        strategy = if (categoriaId == 0)
+            ObtenerTodosProductos()              // ⭐ MODIFICADO
+        else
+            ObtenerProductosPorCategoria(categoriaId) // ⭐ MODIFICADO
+
         configurarRecyclerView()
-        cargarProductos()
+        cargarProductos() // ahora usa strategy
 
         btnGenerarCatalogo = findViewById(R.id.btnGenerarCatalogo)
 
         btnGenerarCatalogo.setOnClickListener {
+
+            // ⭐ MODIFICADO: el PDF solo se genera por categoría válida (no para "todos los productos")
+            if (categoriaId == 0) {
+                Toast.makeText(
+                    this,
+                    "El catálogo solo puede generarse por categoría.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
             if (categoria != null && productos.isNotEmpty()) {
                 generarYCompartirPdfCategoria()
             } else {
@@ -147,9 +167,10 @@ class ProductosActivity : AppCompatActivity() {
     }
 
     fun cargarProductos() {
-        Log.d("ProductosActivity", "Cargando productos para categoría: $categoriaId")
+        Log.d("ProductosActivity", "Cargando productos (Strategy aplicada)…")
 
-        val callback = object : ApiGateway.ApiCallback<List<Producto>> {
+        // ⭐ MODIFICADO: ahora NO usamos if/else, se delega completamente a Strategy
+        strategy.obtenerProductos(apiGateway, object : ApiGateway.ApiCallback<List<Producto>> {
             override fun onSuccess(data: List<Producto>) {
                 runOnUiThread {
                     productos.clear()
@@ -163,13 +184,7 @@ class ProductosActivity : AppCompatActivity() {
                     Toast.makeText(this@ProductosActivity, "Error: $error", Toast.LENGTH_LONG).show()
                 }
             }
-        }
-
-        if (categoriaId == 0) {
-            apiGateway.obtenerProductos(callback)
-        } else {
-            apiGateway.obtenerProductosPorCategoria(categoriaId, callback)
-        }
+        })
     }
 
     private fun mostrarDialogCrearProducto() {

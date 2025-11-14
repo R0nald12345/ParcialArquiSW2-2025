@@ -1,0 +1,146 @@
+📝 REFERENCIA DE CÓDIGO
+
+═══════════════════════════════════════════════════════════════
+
+🎯 ARCHIVOS MODIFICADOS / CREADOS
+
+═══════════════════════════════════════════════════════════════
+
+1️⃣ drawer_menu.xml (MODIFICADO)
+─────────────────────────────────
+
+Agregar este item ANTES de "nav_metodo_pago":
+
+    <item
+        android:id="@+id/nav_productos"
+        android:icon="@drawable/ic_shopping"
+        android:title="Productos"/>
+
+═══════════════════════════════════════════════════════════════
+
+2️⃣ CategoriaActivity.kt (MODIFICADO)
+────────────────────────────────────
+
+Agregar import:
+import com.example.parcialarqui.producto.ProductosFilterActivity
+
+Agregar en navigationView listener (después de nav_inicio):
+        R.id.nav_productos -> {
+            startActivity(Intent(this, ProductosFilterActivity::class.java))
+            drawerLayout.closeDrawers()
+            true
+        }
+
+═══════════════════════════════════════════════════════════════
+
+3️⃣ ProductosFilterActivity.kt (CREADO - NUEVO)
+───────────────────────────────────────────────
+
+Ubicación: app/src/main/java/com/example/parcialarqui/producto/
+
+VER ARCHIVO ANTERIOR (ProductosFilterActivity.kt)
+
+═══════════════════════════════════════════════════════════════
+
+4️⃣ activity_productos_filter.xml (CREADO - NUEVO)
+──────────────────────────────────────────────────
+
+Ubicación: app/src/main/res/layout/
+
+VER ARCHIVO ANTERIOR (activity_productos_filter.xml)
+
+═══════════════════════════════════════════════════════════════
+
+5️⃣ AndroidManifest.xml (MODIFICADO)
+──────────────────────────────────
+
+Agregar ANTES de "Métodos de Pago":
+
+        <!-- ⭐ Productos Filter (Con dropdown de categorías) -->
+        <activity
+            android:name=".producto.ProductosFilterActivity"
+            android:exported="false"
+            android:parentActivityName=".categoria.CategoriaActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".categoria.CategoriaActivity" />
+        </activity>
+
+═══════════════════════════════════════════════════════════════
+
+🔑 PUNTOS CLAVE DEL CÓDIGO:
+
+─────────────────────────────────
+
+Spinner Listener:
+
+spinnerCategorias.onItemSelectedListener = 
+    object : OnItemSelectedListener {
+        override fun onItemSelected(parent, view, position, id) {
+            if (position == 0) {
+                categoriaSeleccionada = 0
+                strategy = ObtenerTodosProductos()
+            } else {
+                val categoria = categorias[position - 1]
+                categoriaSeleccionada = categoria.id
+                strategy = ObtenerProductosPorCategoria(categoria.id)
+            }
+            cargarProductos()
+        }
+    }
+
+─────────────────────────────────
+
+Cargar Categorías:
+
+fun cargarCategorias() {
+    apiGateway.obtenerCategorias(object : ApiCallback<List<Categoria>> {
+        override fun onSuccess(data: List<Categoria>) {
+            categorias.clear()
+            categorias.addAll(data)
+            
+            val items = mutableListOf("Todos los Productos")
+            items.addAll(categorias.map { it.nombre })
+            
+            val adapter = ArrayAdapter(this@ProductosFilterActivity,
+                android.R.layout.simple_spinner_item, items)
+            spinnerCategorias.adapter = adapter
+        }
+    })
+}
+
+─────────────────────────────────
+
+Cargar Productos (con Strategy):
+
+fun cargarProductos() {
+    if (!::strategy.isInitialized) {
+        strategy = ObtenerTodosProductos()
+    }
+    
+    strategy.obtenerProductos(apiGateway, 
+        object : ApiCallback<List<Producto>> {
+            override fun onSuccess(data: List<Producto>) {
+                productos.clear()
+                productos.addAll(data)
+                adapter.notifyDataSetChanged()
+            }
+        })
+}
+
+═══════════════════════════════════════════════════════════════
+
+✅ CHECKLIST:
+
+[ ] Agregar item en drawer_menu.xml
+[ ] Agregar import en CategoriaActivity.kt
+[ ] Agregar listener en CategoriaActivity.kt
+[ ] Crear ProductosFilterActivity.kt
+[ ] Crear activity_productos_filter.xml
+[ ] Registrar en AndroidManifest.xml
+[ ] Compilar sin errores
+[ ] Probar navegación
+[ ] Probar spinner
+[ ] Probar cambio de productos
+
+═══════════════════════════════════════════════════════════════

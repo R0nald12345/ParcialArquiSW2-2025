@@ -35,9 +35,29 @@
                 android:value=".MainActivity" />
         </activity>
 
-        <!-- Productos -->
+        <!-- Productos por Categoría -->
         <activity
             android:name=".producto.ProductosActivity"
+            android:exported="false"
+            android:parentActivityName=".categoria.CategoriaActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".categoria.CategoriaActivity" />
+        </activity>
+
+        <!-- ⭐ Productos General (Todos los productos) -->
+        <activity
+            android:name=".producto.ProductosGeneralActivity"
+            android:exported="false"
+            android:parentActivityName=".categoria.CategoriaActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".categoria.CategoriaActivity" />
+        </activity>
+
+        <!-- ⭐ Productos Filter (Con dropdown de categorías) -->
+        <activity
+            android:name=".producto.ProductosFilterActivity"
             android:exported="false"
             android:parentActivityName=".categoria.CategoriaActivity">
             <meta-data
