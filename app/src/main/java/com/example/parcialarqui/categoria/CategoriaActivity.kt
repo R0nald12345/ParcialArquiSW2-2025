@@ -18,8 +18,8 @@ import com.example.parcialarqui.R
 import com.example.parcialarqui.cliente.ClienteActivity
 import com.example.parcialarqui.metodopago.MetodoPagoActivity
 import com.example.parcialarqui.pedido.PedidoActivity
-import com.example.parcialarqui.producto.ProductosGeneralActivity
-import com.example.parcialarqui.producto.ProductosFilterActivity
+//import com.example.parcialarqui.producto.ProductosFilterActivity
+import com.example.parcialarqui.producto.ProductosActivity
 import com.example.parcialarqui.repartidor.RepartidorActivity
 import com.google.android.material.navigation.NavigationView
 
@@ -58,14 +58,14 @@ class CategoriaActivity : AppCompatActivity() {
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_inicio -> {
-                    // ⭐ MODIFICADO: Navegar a ProductosGeneralActivity
-                    startActivity(Intent(this, ProductosGeneralActivity::class.java))
+                    // ⭐ Navegar a ProductosFilterActivity
+                    startActivity(Intent(this, ProductosActivity::class.java))
                     drawerLayout.closeDrawers()
                     true
                 }
                 R.id.nav_productos -> {
-                    // ⭐ NUEVO: Navegar a ProductosFilterActivity (con dropdown)
-                    startActivity(Intent(this, ProductosFilterActivity::class.java))
+                    // ⭐ Navegar a ProductosFilterActivity
+                    startActivity(Intent(this, ProductosActivity::class.java))
                     drawerLayout.closeDrawers()
                     true
                 }

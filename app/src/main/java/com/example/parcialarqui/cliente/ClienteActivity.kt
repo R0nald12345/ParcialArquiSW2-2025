@@ -35,6 +35,7 @@ class ClienteActivity : AppCompatActivity() {
     private val clientes = mutableListOf<Cliente>()
     private lateinit var adapter: ClienteAdapter
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cliente)
@@ -166,33 +167,39 @@ class ClienteActivity : AppCompatActivity() {
         val etUbicacion = layout.findViewById<EditText>(R.id.etUbicacion)
 
         builder.setPositiveButton("Guardar") { _, _ ->
-            val (lat, lng) = parseCoordenadas(etUbicacion.text.toString())
+            try {
+                val (lat, lng) = parseCoordenadas(etUbicacion.text.toString())
 
-            val nuevo = Cliente(
-                id = 0,
-                nombre = etNombre.text.toString(),
-                telefono = etTelefono.text.toString(),
-                email = etEmail.text.toString(),
-                direccion = etDireccion.text.toString(),
-                coordenadaX = lat ?: 0.0,
-                coordenadaY = lng ?: 0.0,
-                fechaRegistro = "" // lo asigna el servidor
-            )
+                // ⭐ PATRÓN BUILDER CON DIRECTOR
+                val clienteBuilder = ClienteNuevoBuilder()
+                val director = ClienteDirector(clienteBuilder)
 
-            apiGateway.crearCliente(nuevo, object : ApiGateway.ApiCallback<Boolean> {
-                override fun onSuccess(data: Boolean) {
-                    runOnUiThread {
-                        cargarClientes()
-                        Toast.makeText(this@ClienteActivity, "Cliente creado", Toast.LENGTH_SHORT).show()
+                val nuevo = director.construirClienteNuevo(
+                    nombre = etNombre.text.toString(),
+                    telefono = etTelefono.text.toString(),
+                    email = etEmail.text.toString(),
+                    direccion = etDireccion.text.toString(),
+                    coordenadaX = lat ?: 0.0,
+                    coordenadaY = lng ?: 0.0
+                )
+
+                apiGateway.crearCliente(nuevo, object : ApiGateway.ApiCallback<Boolean> {
+                    override fun onSuccess(data: Boolean) {
+                        runOnUiThread {
+                            cargarClientes()
+                            Toast.makeText(this@ClienteActivity, "Cliente creado", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
 
-                override fun onError(error: String) {
-                    runOnUiThread {
-                        Toast.makeText(this@ClienteActivity, "Error: $error", Toast.LENGTH_SHORT).show()
+                    override fun onError(error: String) {
+                        runOnUiThread {
+                            Toast.makeText(this@ClienteActivity, "Error: $error", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
-            })
+                })
+            } catch (e: IllegalArgumentException) {
+                Toast.makeText(this@ClienteActivity, "Validación: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
 
         builder.setNegativeButton("Cancelar", null)
@@ -223,33 +230,40 @@ class ClienteActivity : AppCompatActivity() {
         }
 
         builder.setPositiveButton("Actualizar") { _, _ ->
-            val (lat, lng) = parseCoordenadas(etUbicacion.text.toString())
+            try {
+                val (lat, lng) = parseCoordenadas(etUbicacion.text.toString())
 
-            val actualizado = Cliente(
-                id = cliente.id,
-                nombre = etNombre.text.toString(),
-                telefono = etTelefono.text.toString(),
-                email = etEmail.text.toString(),
-                direccion = etDireccion.text.toString(),
-                coordenadaX = lat ?: 0.0,
-                coordenadaY = lng ?: 0.0,
-                fechaRegistro = cliente.fechaRegistro
-            )
+                // ⭐ PATRÓN BUILDER CON DIRECTOR
+                val clienteBuilder = ClienteExistenteBuilder(cliente)
+                val director = ClienteDirector(clienteBuilder)
 
-            apiGateway.actualizarCliente(actualizado, object : ApiGateway.ApiCallback<Boolean> {
-                override fun onSuccess(data: Boolean) {
-                    runOnUiThread {
-                        cargarClientes()
-                        Toast.makeText(this@ClienteActivity, "Cliente actualizado", Toast.LENGTH_SHORT).show()
+                val actualizado = director.construirClienteExistente(
+                    nombre = etNombre.text.toString(),
+                    telefono = etTelefono.text.toString(),
+                    email = etEmail.text.toString(),
+                    direccion = etDireccion.text.toString(),
+                    coordenadaX = lat ?: 0.0,
+                    coordenadaY = lng ?: 0.0,
+                    fechaRegistro = cliente.fechaRegistro
+                )
+
+                apiGateway.actualizarCliente(actualizado, object : ApiGateway.ApiCallback<Boolean> {
+                    override fun onSuccess(data: Boolean) {
+                        runOnUiThread {
+                            cargarClientes()
+                            Toast.makeText(this@ClienteActivity, "Cliente actualizado", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
 
-                override fun onError(error: String) {
-                    runOnUiThread {
-                        Toast.makeText(this@ClienteActivity, "Error: $error", Toast.LENGTH_SHORT).show()
+                    override fun onError(error: String) {
+                        runOnUiThread {
+                            Toast.makeText(this@ClienteActivity, "Error: $error", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
-            })
+                })
+            } catch (e: IllegalArgumentException) {
+                Toast.makeText(this@ClienteActivity, "Validación: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
 
         builder.setNegativeButton("Cancelar", null)

@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.parcialarqui.ApiGateway
 import com.example.parcialarqui.R
-import com.example.parcialarqui.producto.ProductosActivity
 
 class CategoriaAdapter(
     private val lista: List<Categoria>,
@@ -24,7 +23,6 @@ class CategoriaAdapter(
         val ivImagen: ImageView = view.findViewById(R.id.ivImagen)
         val btnEditar: ImageView = view.findViewById(R.id.btnEditar)
         val btnEliminar: ImageView = view.findViewById(R.id.btnEliminar)
-        val btnVerProductos: TextView = view.findViewById(R.id.btnVerProductos) // 👈 corregido
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -39,16 +37,6 @@ class CategoriaAdapter(
         holder.tvNombre.text = categoria.nombre
         holder.tvDescripcion.text = categoria.descripcion
         holder.ivImagen.setImageResource(R.drawable.ic_category)
-
-        //  Botón "Ver productos"
-        holder.btnVerProductos.setOnClickListener {
-            val ctx = holder.itemView.context
-            val intent = Intent(ctx, ProductosActivity::class.java).apply {
-                putExtra("categoria_id", categoria.id)
-                putExtra("categoria_nombre", categoria.nombre)
-            }
-            ctx.startActivity(intent)
-        }
 
         //  Editar
         holder.btnEditar.setOnClickListener {

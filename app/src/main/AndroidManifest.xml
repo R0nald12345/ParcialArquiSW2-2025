@@ -45,17 +45,7 @@
                 android:value=".categoria.CategoriaActivity" />
         </activity>
 
-        <!-- ⭐ Productos General (Todos los productos) -->
-        <activity
-            android:name=".producto.ProductosGeneralActivity"
-            android:exported="false"
-            android:parentActivityName=".categoria.CategoriaActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".categoria.CategoriaActivity" />
-        </activity>
-
-        <!-- ⭐ Productos Filter (Con dropdown de categorías) -->
+        <!-- ⭐ Productos Filter (Vista principal con dropdown + PDF) -->
         <activity
             android:name=".producto.ProductosFilterActivity"
             android:exported="false"
